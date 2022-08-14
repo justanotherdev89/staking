@@ -1,0 +1,231 @@
+{
+  "contractName": "WitnetRequestBase",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "bytecode",
+      "outputs": [
+        {
+          "internalType": "bytes",
+          "name": "",
+          "type": "bytes"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "hash",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.15+commit.e14f2714\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"bytecode\",\"outputs\":[{\"internalType\":\"bytes\",\"name\":\"\",\"type\":\"bytes\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"hash\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{\"bytecode()\":{\"notice\":\"Contains a well-formed Witnet Data Request, encoded using Protocol Buffers.\"},\"hash()\":{\"notice\":\"Returns SHA256 hash of Witnet Data Request as CBOR-encoded bytes.\"}},\"version\":1}},\"settings\":{\"compilationTarget\":{\"witnet-solidity-bridge/contracts/requests/WitnetRequestBase.sol\":\"WitnetRequestBase\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"witnet-solidity-bridge/contracts/interfaces/IWitnetRequest.sol\":{\"keccak256\":\"0xb455f625c6db8ce0525cb6ba8b2df2d85b37cfac6e2c5b64876b6f0e5bd22269\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d977a93f5e3031fa1bfa10f7923c42620e9aa9a32244ef3e9ff29a2dbaa43f84\",\"dweb:/ipfs/QmWbwT4TkpgyhoT3PJ7x91QA8NwYtKtB3aizGMPvbknsM3\"]},\"witnet-solidity-bridge/contracts/libs/Witnet.sol\":{\"keccak256\":\"0x7875cbaff083818824bcec302443788fb5723b161952fdf28a0ddd7c4b3a9b3e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://56c28646279cac64abb84751962b774c854aa122c27a7d19c68d99d3622ad053\",\"dweb:/ipfs/QmVfffZZJRb2naceyAxr8Z5rEQyBkfKgYqqmssobk9qz2h\"]},\"witnet-solidity-bridge/contracts/requests/WitnetRequestBase.sol\":{\"keccak256\":\"0x1a3220346005ca91601a89896523f67bdd0fd3dc79b6e684d3e5dbf20f11c5ab\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f52d15b27df55d04c065a9047b3e466f6af661937deb0bff745dd709378331b3\",\"dweb:/ipfs/QmakcMPfpQKHdCzUB8JSVrzLtKc5CH717uKTt7rK8TxRwp\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\n\npragma solidity >=0.7.0 <0.9.0;\n\nimport \"../libs/Witnet.sol\";\n\nabstract contract WitnetRequestBase\n    is\n        IWitnetRequest\n{\n    /// Contains a well-formed Witnet Data Request, encoded using Protocol Buffers.\n    bytes public override bytecode;\n\n    /// Returns SHA256 hash of Witnet Data Request as CBOR-encoded bytes.\n    bytes32 public override hash;\n}\n",
+  "sourcePath": "witnet-solidity-bridge\\contracts\\requests\\WitnetRequestBase.sol",
+  "ast": {
+    "absolutePath": "witnet-solidity-bridge/contracts/requests/WitnetRequestBase.sol",
+    "exportedSymbols": {
+      "IWitnetRequest": [
+        6179
+      ],
+      "Witnet": [
+        6514
+      ],
+      "WitnetRequestBase": [
+        6553
+      ]
+    },
+    "id": 6554,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 6541,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.7",
+          ".0",
+          "<",
+          "0.9",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:31:41"
+      },
+      {
+        "absolutePath": "witnet-solidity-bridge/contracts/libs/Witnet.sol",
+        "file": "../libs/Witnet.sol",
+        "id": 6542,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 6554,
+        "sourceUnit": 6515,
+        "src": "66:28:41",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": true,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 6543,
+              "name": "IWitnetRequest",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 6179,
+              "src": "147:14:41"
+            },
+            "id": 6544,
+            "nodeType": "InheritanceSpecifier",
+            "src": "147:14:41"
+          }
+        ],
+        "canonicalName": "WitnetRequestBase",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 6553,
+        "linearizedBaseContracts": [
+          6553,
+          6179
+        ],
+        "name": "WitnetRequestBase",
+        "nameLocation": "114:17:41",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "baseFunctions": [
+              6172
+            ],
+            "constant": false,
+            "documentation": {
+              "id": 6545,
+              "nodeType": "StructuredDocumentation",
+              "src": "168:79:41",
+              "text": "Contains a well-formed Witnet Data Request, encoded using Protocol Buffers."
+            },
+            "functionSelector": "f0940002",
+            "id": 6548,
+            "mutability": "mutable",
+            "name": "bytecode",
+            "nameLocation": "274:8:41",
+            "nodeType": "VariableDeclaration",
+            "overrides": {
+              "id": 6547,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "265:8:41"
+            },
+            "scope": 6553,
+            "src": "252:30:41",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_bytes_storage",
+              "typeString": "bytes"
+            },
+            "typeName": {
+              "id": 6546,
+              "name": "bytes",
+              "nodeType": "ElementaryTypeName",
+              "src": "252:5:41",
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes_storage_ptr",
+                "typeString": "bytes"
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "baseFunctions": [
+              6178
+            ],
+            "constant": false,
+            "documentation": {
+              "id": 6549,
+              "nodeType": "StructuredDocumentation",
+              "src": "289:69:41",
+              "text": "Returns SHA256 hash of Witnet Data Request as CBOR-encoded bytes."
+            },
+            "functionSelector": "09bd5a60",
+            "id": 6552,
+            "mutability": "mutable",
+            "name": "hash",
+            "nameLocation": "387:4:41",
+            "nodeType": "VariableDeclaration",
+            "overrides": {
+              "id": 6551,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "378:8:41"
+            },
+            "scope": 6553,
+            "src": "363:28:41",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_bytes32",
+              "typeString": "bytes32"
+            },
+            "typeName": {
+              "id": 6550,
+              "name": "bytes32",
+              "nodeType": "ElementaryTypeName",
+              "src": "363:7:41",
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes32",
+                "typeString": "bytes32"
+              }
+            },
+            "visibility": "public"
+          }
+        ],
+        "scope": 6554,
+        "src": "96:298:41",
+        "usedErrors": []
+      }
+    ],
+    "src": "33:362:41"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.15+commit.e14f2714.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.8",
+  "updatedAt": "2022-08-11T14:10:46.179Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {
+      "bytecode()": {
+        "notice": "Contains a well-formed Witnet Data Request, encoded using Protocol Buffers."
+      },
+      "hash()": {
+        "notice": "Returns SHA256 hash of Witnet Data Request as CBOR-encoded bytes."
+      }
+    },
+    "version": 1
+  }
+}

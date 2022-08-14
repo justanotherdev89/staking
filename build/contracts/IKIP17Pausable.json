@@ -1,0 +1,481 @@
+{
+  "contractName": "IKIP17Pausable",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "paused",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "pause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "unpause",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "isPauser",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_account",
+          "type": "address"
+        }
+      ],
+      "name": "addPauser",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renouncePauser",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.15+commit.e14f2714\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_account\",\"type\":\"address\"}],\"name\":\"addPauser\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"isPauser\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"pause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"paused\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renouncePauser\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"unpause\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Pausing extension of the KIP17 standard as defined in the KIP. See https://kips.klaytn.com/KIPs/kip-17#enumeration-extension\",\"kind\":\"dev\",\"methods\":{\"addPauser(address)\":{\"details\":\"Assign the Pauser role to `account` via {AccessControl-grantRole} Requirements: - caller must have the {AccessControl-DEFAULT_ADMIN_ROLE}\"},\"isPauser(address)\":{\"details\":\"Check if `account` has the assigned Pauser role via {AccessControl-hasRole}\"},\"pause()\":{\"details\":\"Pause any function which triggers {KIP17-_beforeTokenTransfer} Emits a {Paused} event. Requirements: - caller must have the {KIP17Pausable-PAUSER_ROLE}\"},\"paused()\":{\"details\":\"Returns true if the contract is paused, false otherwise\"},\"renouncePauser()\":{\"details\":\"Renounce the Pauser role of the caller via {AccessControl-renounceRole}\"},\"unpause()\":{\"details\":\"Resume normal function from the paused state Emits a {Unpaused} event. Requirements: - caller must have the {KIP17Pausable-PAUSER_ROLE}\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"@klaytn/contracts/KIP/token/KIP17/extensions/IKIP17Pausable.sol\":\"IKIP17Pausable\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@klaytn/contracts/KIP/token/KIP17/extensions/IKIP17Pausable.sol\":{\"keccak256\":\"0x463c0f8f609a6f8d5b8cee69074c8fafa047fc8bb00e9dfac4be43f47c9dec59\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1fbf1d22ce78333643c4294c99a75b954bbd50e57add1720c623c0d27e5186da\",\"dweb:/ipfs/QmcbRqRQN42AUVaiGpu7zP4aJRPm7wEM3WPgsznTyvbn8R\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\n// Klaytn Contract Library v1.0.0 (KIP/token/KIP17/extensions/IKIP17Pausable.sol)\n\npragma solidity ^0.8.0;\n\n/**\n * @dev Pausing extension of the KIP17 standard as defined in the KIP.\n * See https://kips.klaytn.com/KIPs/kip-17#enumeration-extension\n */\ninterface IKIP17Pausable {\n    /**\n     * @dev Returns true if the contract is paused, false otherwise\n     */\n    function paused() external view returns (bool);\n\n    /**\n     * @dev Pause any function which triggers {KIP17-_beforeTokenTransfer}\n     *\n     * Emits a {Paused} event.\n     *\n     * Requirements:\n     *\n     * - caller must have the {KIP17Pausable-PAUSER_ROLE}\n     */\n    function pause() external;\n\n    /**\n     * @dev Resume normal function from the paused state\n     *\n     * Emits a {Unpaused} event.\n     *\n     * Requirements:\n     *\n     * - caller must have the {KIP17Pausable-PAUSER_ROLE}\n     */\n    function unpause() external;\n\n    /**\n     * @dev Check if `account` has the assigned Pauser role via {AccessControl-hasRole}\n     */\n    function isPauser(address account) external view returns (bool);\n\n    /**\n     * @dev Assign the Pauser role to `account` via {AccessControl-grantRole}\n     *\n     * Requirements:\n     *\n     * - caller must have the {AccessControl-DEFAULT_ADMIN_ROLE}\n     */\n    function addPauser(address _account) external;\n\n    /**\n     * @dev Renounce the Pauser role of the caller via {AccessControl-renounceRole}\n     */\n    function renouncePauser() external;\n}\n",
+  "sourcePath": "@klaytn\\contracts\\KIP\\token\\KIP17\\extensions\\IKIP17Pausable.sol",
+  "ast": {
+    "absolutePath": "@klaytn/contracts/KIP/token/KIP17/extensions/IKIP17Pausable.sol",
+    "exportedSymbols": {
+      "IKIP17Pausable": [
+        1213
+      ]
+    },
+    "id": 1214,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1179,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "115:23:8"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IKIP17Pausable",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 1180,
+          "nodeType": "StructuredDocumentation",
+          "src": "140:143:8",
+          "text": " @dev Pausing extension of the KIP17 standard as defined in the KIP.\n See https://kips.klaytn.com/KIPs/kip-17#enumeration-extension"
+        },
+        "fullyImplemented": false,
+        "id": 1213,
+        "linearizedBaseContracts": [
+          1213
+        ],
+        "name": "IKIP17Pausable",
+        "nameLocation": "294:14:8",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "documentation": {
+              "id": 1181,
+              "nodeType": "StructuredDocumentation",
+              "src": "315:79:8",
+              "text": " @dev Returns true if the contract is paused, false otherwise"
+            },
+            "functionSelector": "5c975abb",
+            "id": 1186,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "paused",
+            "nameLocation": "408:6:8",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1182,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "414:2:8"
+            },
+            "returnParameters": {
+              "id": 1185,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1184,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1186,
+                  "src": "440:4:8",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 1183,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "440:4:8",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "439:6:8"
+            },
+            "scope": 1213,
+            "src": "399:47:8",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 1187,
+              "nodeType": "StructuredDocumentation",
+              "src": "452:217:8",
+              "text": " @dev Pause any function which triggers {KIP17-_beforeTokenTransfer}\n Emits a {Paused} event.\n Requirements:\n - caller must have the {KIP17Pausable-PAUSER_ROLE}"
+            },
+            "functionSelector": "8456cb59",
+            "id": 1190,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "pause",
+            "nameLocation": "683:5:8",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1188,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "688:2:8"
+            },
+            "returnParameters": {
+              "id": 1189,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "699:0:8"
+            },
+            "scope": 1213,
+            "src": "674:26:8",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 1191,
+              "nodeType": "StructuredDocumentation",
+              "src": "706:201:8",
+              "text": " @dev Resume normal function from the paused state\n Emits a {Unpaused} event.\n Requirements:\n - caller must have the {KIP17Pausable-PAUSER_ROLE}"
+            },
+            "functionSelector": "3f4ba83a",
+            "id": 1194,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "unpause",
+            "nameLocation": "921:7:8",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1192,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "928:2:8"
+            },
+            "returnParameters": {
+              "id": 1193,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "939:0:8"
+            },
+            "scope": 1213,
+            "src": "912:28:8",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 1195,
+              "nodeType": "StructuredDocumentation",
+              "src": "946:99:8",
+              "text": " @dev Check if `account` has the assigned Pauser role via {AccessControl-hasRole}"
+            },
+            "functionSelector": "46fbf68e",
+            "id": 1202,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isPauser",
+            "nameLocation": "1059:8:8",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1198,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1197,
+                  "mutability": "mutable",
+                  "name": "account",
+                  "nameLocation": "1076:7:8",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1202,
+                  "src": "1068:15:8",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1196,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1068:7:8",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1067:17:8"
+            },
+            "returnParameters": {
+              "id": 1201,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1200,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1202,
+                  "src": "1108:4:8",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 1199,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1108:4:8",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1107:6:8"
+            },
+            "scope": 1213,
+            "src": "1050:64:8",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 1203,
+              "nodeType": "StructuredDocumentation",
+              "src": "1120:189:8",
+              "text": " @dev Assign the Pauser role to `account` via {AccessControl-grantRole}\n Requirements:\n - caller must have the {AccessControl-DEFAULT_ADMIN_ROLE}"
+            },
+            "functionSelector": "82dc1ec4",
+            "id": 1208,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addPauser",
+            "nameLocation": "1323:9:8",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1206,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1205,
+                  "mutability": "mutable",
+                  "name": "_account",
+                  "nameLocation": "1341:8:8",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1208,
+                  "src": "1333:16:8",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1204,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1333:7:8",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1332:18:8"
+            },
+            "returnParameters": {
+              "id": 1207,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1359:0:8"
+            },
+            "scope": 1213,
+            "src": "1314:46:8",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 1209,
+              "nodeType": "StructuredDocumentation",
+              "src": "1366:95:8",
+              "text": " @dev Renounce the Pauser role of the caller via {AccessControl-renounceRole}"
+            },
+            "functionSelector": "6ef8d66d",
+            "id": 1212,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "renouncePauser",
+            "nameLocation": "1475:14:8",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1210,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1489:2:8"
+            },
+            "returnParameters": {
+              "id": 1211,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1500:0:8"
+            },
+            "scope": 1213,
+            "src": "1466:35:8",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 1214,
+        "src": "284:1219:8",
+        "usedErrors": []
+      }
+    ],
+    "src": "115:1389:8"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.15+commit.e14f2714.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.8",
+  "updatedAt": "2022-08-11T14:10:46.052Z",
+  "devdoc": {
+    "details": "Pausing extension of the KIP17 standard as defined in the KIP. See https://kips.klaytn.com/KIPs/kip-17#enumeration-extension",
+    "kind": "dev",
+    "methods": {
+      "addPauser(address)": {
+        "details": "Assign the Pauser role to `account` via {AccessControl-grantRole} Requirements: - caller must have the {AccessControl-DEFAULT_ADMIN_ROLE}"
+      },
+      "isPauser(address)": {
+        "details": "Check if `account` has the assigned Pauser role via {AccessControl-hasRole}"
+      },
+      "pause()": {
+        "details": "Pause any function which triggers {KIP17-_beforeTokenTransfer} Emits a {Paused} event. Requirements: - caller must have the {KIP17Pausable-PAUSER_ROLE}"
+      },
+      "paused()": {
+        "details": "Returns true if the contract is paused, false otherwise"
+      },
+      "renouncePauser()": {
+        "details": "Renounce the Pauser role of the caller via {AccessControl-renounceRole}"
+      },
+      "unpause()": {
+        "details": "Resume normal function from the paused state Emits a {Unpaused} event. Requirements: - caller must have the {KIP17Pausable-PAUSER_ROLE}"
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

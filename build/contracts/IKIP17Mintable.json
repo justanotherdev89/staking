@@ -1,0 +1,462 @@
+{
+  "contractName": "IKIP17Mintable",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "mint",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "isMinter",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "addMinter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceMinter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.15+commit.e14f2714\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"addMinter\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"isMinter\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"mint\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceMinter\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Minting extension of the KIP17 standard as defined in the KIP. See https://kips.klaytn.com/KIPs/kip-17#minting-extension\",\"kind\":\"dev\",\"methods\":{\"addMinter(address)\":{\"details\":\"Assign the Minter role to `account` via {AccessControl-grantRole} Emits a {RoleGranted} event Requirements: - caller must have the {KIP7Mintable-MINTER_ROLE}\"},\"isMinter(address)\":{\"details\":\"Check if `account` has the assigned Minter role via {AccessControl-hasRole}\"},\"mint(address,uint256)\":{\"details\":\"Creates `tokenId` token and assigns them to `account` increasing the total supply. Requirements: - caller must have the {KIP7Mintable-MINTER_ROLE} Emits a {Transfer} event with 0X0 as the `from` account\"},\"renounceMinter()\":{\"details\":\"Renounce the Minter role of the caller via {AccessControl-renounceRole} Emits a {RoleRevoked} event\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"@klaytn/contracts/KIP/token/KIP17/extensions/IKIP17Mintable.sol\":\"IKIP17Mintable\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@klaytn/contracts/KIP/token/KIP17/extensions/IKIP17Mintable.sol\":{\"keccak256\":\"0x67a8ffaa6b4fa5bf13507dc65fbf476c42f06b38f2b626b92a0e61a2a73c6829\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1321eafbc479b9ba3d8b7ff4bcc69f17adaedc293a7f60a5e0bdc68ce2af78aa\",\"dweb:/ipfs/QmXdiiXBj3rm6m5JGGoRZh41EmLSMx6tzTsgg5JWdsAAhD\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\n// Klaytn Contract Library v1.0.0 (KIP/token/KIP17/extensions/IKIP17Mintable.sol)\n\npragma solidity ^0.8.0;\n\n/**\n * @dev Minting extension of the KIP17 standard as defined in the KIP.\n * See https://kips.klaytn.com/KIPs/kip-17#minting-extension\n */\ninterface IKIP17Mintable {\n    /**\n     * @dev Creates `tokenId` token and assigns them to `account`\n     * increasing the total supply.\n     *\n     * Requirements:\n     *\n     * - caller must have the {KIP7Mintable-MINTER_ROLE}\n     *\n     * Emits a {Transfer} event with 0X0 as the `from` account\n     */\n    function mint(address to, uint256 tokenId) external returns (bool);\n\n    /**\n     * @dev Check if `account` has the assigned Minter role via {AccessControl-hasRole}\n     */\n    function isMinter(address account) external view returns (bool);\n\n    /**\n     * @dev Assign the Minter role to `account` via {AccessControl-grantRole}\n     *\n     * Emits a {RoleGranted} event\n     *\n     * Requirements:\n     *\n     * - caller must have the {KIP7Mintable-MINTER_ROLE}\n     */\n    function addMinter(address account) external;\n\n    /**\n     * @dev Renounce the Minter role of the caller via {AccessControl-renounceRole}\n     *\n     * Emits a {RoleRevoked} event\n     */\n    function renounceMinter() external;\n}\n",
+  "sourcePath": "@klaytn\\contracts\\KIP\\token\\KIP17\\extensions\\IKIP17Mintable.sol",
+  "ast": {
+    "absolutePath": "@klaytn/contracts/KIP/token/KIP17/extensions/IKIP17Mintable.sol",
+    "exportedSymbols": {
+      "IKIP17Mintable": [
+        1177
+      ]
+    },
+    "id": 1178,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1147,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "115:23:7"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IKIP17Mintable",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 1148,
+          "nodeType": "StructuredDocumentation",
+          "src": "140:139:7",
+          "text": " @dev Minting extension of the KIP17 standard as defined in the KIP.\n See https://kips.klaytn.com/KIPs/kip-17#minting-extension"
+        },
+        "fullyImplemented": false,
+        "id": 1177,
+        "linearizedBaseContracts": [
+          1177
+        ],
+        "name": "IKIP17Mintable",
+        "nameLocation": "290:14:7",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "documentation": {
+              "id": 1149,
+              "nodeType": "StructuredDocumentation",
+              "src": "311:275:7",
+              "text": " @dev Creates `tokenId` token and assigns them to `account`\n increasing the total supply.\n Requirements:\n - caller must have the {KIP7Mintable-MINTER_ROLE}\n Emits a {Transfer} event with 0X0 as the `from` account"
+            },
+            "functionSelector": "40c10f19",
+            "id": 1158,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "mint",
+            "nameLocation": "600:4:7",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1154,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1151,
+                  "mutability": "mutable",
+                  "name": "to",
+                  "nameLocation": "613:2:7",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1158,
+                  "src": "605:10:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1150,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "605:7:7",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1153,
+                  "mutability": "mutable",
+                  "name": "tokenId",
+                  "nameLocation": "625:7:7",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1158,
+                  "src": "617:15:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1152,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "617:7:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "604:29:7"
+            },
+            "returnParameters": {
+              "id": 1157,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1156,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1158,
+                  "src": "652:4:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 1155,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "652:4:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "651:6:7"
+            },
+            "scope": 1177,
+            "src": "591:67:7",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 1159,
+              "nodeType": "StructuredDocumentation",
+              "src": "664:99:7",
+              "text": " @dev Check if `account` has the assigned Minter role via {AccessControl-hasRole}"
+            },
+            "functionSelector": "aa271e1a",
+            "id": 1166,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isMinter",
+            "nameLocation": "777:8:7",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1162,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1161,
+                  "mutability": "mutable",
+                  "name": "account",
+                  "nameLocation": "794:7:7",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1166,
+                  "src": "786:15:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1160,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "786:7:7",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "785:17:7"
+            },
+            "returnParameters": {
+              "id": 1165,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1164,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1166,
+                  "src": "826:4:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 1163,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "826:4:7",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "825:6:7"
+            },
+            "scope": 1177,
+            "src": "768:64:7",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 1167,
+              "nodeType": "StructuredDocumentation",
+              "src": "838:223:7",
+              "text": " @dev Assign the Minter role to `account` via {AccessControl-grantRole}\n Emits a {RoleGranted} event\n Requirements:\n - caller must have the {KIP7Mintable-MINTER_ROLE}"
+            },
+            "functionSelector": "983b2d56",
+            "id": 1172,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "addMinter",
+            "nameLocation": "1075:9:7",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1170,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1169,
+                  "mutability": "mutable",
+                  "name": "account",
+                  "nameLocation": "1093:7:7",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1172,
+                  "src": "1085:15:7",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1168,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1085:7:7",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1084:17:7"
+            },
+            "returnParameters": {
+              "id": 1171,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1110:0:7"
+            },
+            "scope": 1177,
+            "src": "1066:45:7",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 1173,
+              "nodeType": "StructuredDocumentation",
+              "src": "1117:137:7",
+              "text": " @dev Renounce the Minter role of the caller via {AccessControl-renounceRole}\n Emits a {RoleRevoked} event"
+            },
+            "functionSelector": "98650275",
+            "id": 1176,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "renounceMinter",
+            "nameLocation": "1268:14:7",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1174,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1282:2:7"
+            },
+            "returnParameters": {
+              "id": 1175,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1293:0:7"
+            },
+            "scope": 1177,
+            "src": "1259:35:7",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 1178,
+        "src": "280:1016:7",
+        "usedErrors": []
+      }
+    ],
+    "src": "115:1182:7"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.15+commit.e14f2714.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.8",
+  "updatedAt": "2022-08-11T14:10:46.051Z",
+  "devdoc": {
+    "details": "Minting extension of the KIP17 standard as defined in the KIP. See https://kips.klaytn.com/KIPs/kip-17#minting-extension",
+    "kind": "dev",
+    "methods": {
+      "addMinter(address)": {
+        "details": "Assign the Minter role to `account` via {AccessControl-grantRole} Emits a {RoleGranted} event Requirements: - caller must have the {KIP7Mintable-MINTER_ROLE}"
+      },
+      "isMinter(address)": {
+        "details": "Check if `account` has the assigned Minter role via {AccessControl-hasRole}"
+      },
+      "mint(address,uint256)": {
+        "details": "Creates `tokenId` token and assigns them to `account` increasing the total supply. Requirements: - caller must have the {KIP7Mintable-MINTER_ROLE} Emits a {Transfer} event with 0X0 as the `from` account"
+      },
+      "renounceMinter()": {
+        "details": "Renounce the Minter role of the caller via {AccessControl-renounceRole} Emits a {RoleRevoked} event"
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

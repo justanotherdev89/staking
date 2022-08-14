@@ -1,0 +1,35 @@
+Arguments: 
+  C:\Program Files\nodejs\node.exe C:\Users\th_kr\AppData\Roaming\npm\node_modules\yarn\bin\yarn.js add witnet-requests witnet-solidity-bridge
+
+PATH: 
+  C:\Users\th_kr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\local\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\usr\bin;C:\Program Files\Git\mingw64\bin;C:\Program Files\Git\usr\bin;C:\Users\th_kr\bin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\OpenSSH;C:\Program Files\nodejs;C:\Program Files\Git\cmd;C:\Program Files\Docker\Docker\resources\bin;C:\ProgramData\DockerDesktop\version-bin;C:\Users\th_kr\AppData\Local\Microsoft\WindowsApps;C:\Users\th_kr\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\th_kr\AppData\Roaming\npm;C:\Program Files\Git\usr\bin\vendor_perl;C:\Program Files\Git\usr\bin\core_perl
+
+Yarn version: 
+  1.22.19
+
+Node version: 
+  16.16.0
+
+Platform: 
+  win32 x64
+
+Trace: 
+  Error: ENOENT: no such file or directory, open 'C:\Users\th_kr\AppData\Local\Yarn\Cache\v6\npm-unique-filename-1.1.1-1d69769369ada0583103a1e6ae87681b56573230-integrity\node_modules\unique-filename\.yarn-tarball.tgz'
+
+npm manifest: 
+  {
+    "dependencies": {
+      "@klaytn/contracts": "^1.0.2",
+      "caver-js": "^1.9.0",
+      "solc": "^0.8.15",
+      "truffle-hdwallet-provider-klaytn": "^1.0.18",
+      "witnet-requests": "^0.8.3",
+      "witnet-solidity-bridge": "^0.5.6"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

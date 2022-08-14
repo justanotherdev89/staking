@@ -1,0 +1,163 @@
+{
+  "contractName": "IKIP17Burnable",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "burn",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.15+commit.e14f2714\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"burn\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"See https://kips.klaytn.com/KIPs/kip-17#burning-extension\",\"kind\":\"dev\",\"methods\":{\"burn(uint256)\":{\"details\":\"Destroys `tokenId` token Emits a {Transfer} event with the 0x0 address as `to`.\"}},\"title\":\"KIP17 Non-Fungible Token Standard, optional burnable extension\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"@klaytn/contracts/KIP/token/KIP17/extensions/IKIP17Burnable.sol\":\"IKIP17Burnable\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@klaytn/contracts/KIP/token/KIP17/extensions/IKIP17Burnable.sol\":{\"keccak256\":\"0x5df5525f03c3222e4aa3a7ae1f9352dd489b7ffce564b18e3468fc4cbc90951f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://69b48edd75166368a04f3bd92d406b356ccf3d3807e203cf2b645f4ebf57e716\",\"dweb:/ipfs/QmYDU4BrXntzVT4x1oQhmGGDCpmCPToFS5FPKhXdpqpZpB\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\n// Klaytn Contract Library v1.0.0 (KIP/token/KIP17/extensions/IKIP17Burnable.sol)\n\npragma solidity ^0.8.0;\n\n/**\n * @title KIP17 Non-Fungible Token Standard, optional burnable extension\n * @dev See https://kips.klaytn.com/KIPs/kip-17#burning-extension\n */\ninterface IKIP17Burnable {\n    /**\n     * @dev Destroys `tokenId` token\n     *\n     * Emits a {Transfer} event with the 0x0 address as `to`.\n     */\n    function burn(uint256 tokenId) external;\n}\n",
+  "sourcePath": "@klaytn\\contracts\\KIP\\token\\KIP17\\extensions\\IKIP17Burnable.sol",
+  "ast": {
+    "absolutePath": "@klaytn/contracts/KIP/token/KIP17/extensions/IKIP17Burnable.sol",
+    "exportedSymbols": {
+      "IKIP17Burnable": [
+        1087
+      ]
+    },
+    "id": 1088,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1079,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "115:23:4"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IKIP17Burnable",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 1080,
+          "nodeType": "StructuredDocumentation",
+          "src": "140:146:4",
+          "text": " @title KIP17 Non-Fungible Token Standard, optional burnable extension\n @dev See https://kips.klaytn.com/KIPs/kip-17#burning-extension"
+        },
+        "fullyImplemented": false,
+        "id": 1087,
+        "linearizedBaseContracts": [
+          1087
+        ],
+        "name": "IKIP17Burnable",
+        "nameLocation": "297:14:4",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "documentation": {
+              "id": 1081,
+              "nodeType": "StructuredDocumentation",
+              "src": "318:117:4",
+              "text": " @dev Destroys `tokenId` token\n Emits a {Transfer} event with the 0x0 address as `to`."
+            },
+            "functionSelector": "42966c68",
+            "id": 1086,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "burn",
+            "nameLocation": "449:4:4",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1084,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1083,
+                  "mutability": "mutable",
+                  "name": "tokenId",
+                  "nameLocation": "462:7:4",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1086,
+                  "src": "454:15:4",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1082,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "454:7:4",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "453:17:4"
+            },
+            "returnParameters": {
+              "id": 1085,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "479:0:4"
+            },
+            "scope": 1087,
+            "src": "440:40:4",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 1088,
+        "src": "287:195:4",
+        "usedErrors": []
+      }
+    ],
+    "src": "115:368:4"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.15+commit.e14f2714.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.8",
+  "updatedAt": "2022-08-11T14:10:46.045Z",
+  "devdoc": {
+    "details": "See https://kips.klaytn.com/KIPs/kip-17#burning-extension",
+    "kind": "dev",
+    "methods": {
+      "burn(uint256)": {
+        "details": "Destroys `tokenId` token Emits a {Transfer} event with the 0x0 address as `to`."
+      }
+    },
+    "title": "KIP17 Non-Fungible Token Standard, optional burnable extension",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

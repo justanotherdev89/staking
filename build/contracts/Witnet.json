@@ -1,0 +1,2796 @@
+{
+  "contractName": "Witnet",
+  "abi": [],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.15+commit.e14f2714\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"witnet-solidity-bridge/contracts/libs/Witnet.sol\":\"Witnet\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"witnet-solidity-bridge/contracts/interfaces/IWitnetRequest.sol\":{\"keccak256\":\"0xb455f625c6db8ce0525cb6ba8b2df2d85b37cfac6e2c5b64876b6f0e5bd22269\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d977a93f5e3031fa1bfa10f7923c42620e9aa9a32244ef3e9ff29a2dbaa43f84\",\"dweb:/ipfs/QmWbwT4TkpgyhoT3PJ7x91QA8NwYtKtB3aizGMPvbknsM3\"]},\"witnet-solidity-bridge/contracts/libs/Witnet.sol\":{\"keccak256\":\"0x7875cbaff083818824bcec302443788fb5723b161952fdf28a0ddd7c4b3a9b3e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://56c28646279cac64abb84751962b774c854aa122c27a7d19c68d99d3622ad053\",\"dweb:/ipfs/QmVfffZZJRb2naceyAxr8Z5rEQyBkfKgYqqmssobk9qz2h\"]}},\"version\":1}",
+  "bytecode": "0x60566050600b82828239805160001a6073146043577f4e487b7100000000000000000000000000000000000000000000000000000000600052600060045260246000fd5b30600052607381538281f3fe73000000000000000000000000000000000000000030146080604052600080fdfea26469706673582212205f37c01bdc892a6f0c4bdf0b7d79498ffcb4ad4ea25e4b311dabe0e0ed5dd71064736f6c634300080f0033",
+  "deployedBytecode": "0x73000000000000000000000000000000000000000030146080604052600080fdfea26469706673582212205f37c01bdc892a6f0c4bdf0b7d79498ffcb4ad4ea25e4b311dabe0e0ed5dd71064736f6c634300080f0033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "144:10937:39:-:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "144:10937:39:-:0;;;;;;;;",
+  "source": "// SPDX-License-Identifier: MIT\n\npragma solidity >=0.7.0 <0.9.0;\npragma experimental ABIEncoderV2;\n\nimport \"../interfaces/IWitnetRequest.sol\";\n\nlibrary Witnet {\n\n    /// @notice Witnet function that computes the hash of a CBOR-encoded Data Request.\n    /// @param _bytecode CBOR-encoded RADON.\n    function hash(bytes memory _bytecode) internal pure returns (bytes32) {\n        return sha256(_bytecode);\n    }\n\n    /// Struct containing both request and response data related to every query posted to the Witnet Request Board\n    struct Query {\n        Request request;\n        Response response;\n        address from;      // Address from which the request was posted.\n    }\n\n    /// Possible status of a Witnet query.\n    enum QueryStatus {\n        Unknown,\n        Posted,\n        Reported,\n        Deleted\n    }\n\n    /// Data kept in EVM-storage for every Request posted to the Witnet Request Board.\n    struct Request {\n        IWitnetRequest addr;    // The contract containing the Data Request which execution has been requested.\n        address requester;      // Address from which the request was posted.\n        bytes32 hash;           // Hash of the Data Request whose execution has been requested.\n        uint256 gasprice;       // Minimum gas price the DR resolver should pay on the solving tx.\n        uint256 reward;         // Escrowed reward to be paid to the DR resolver.\n    }\n\n    /// Data kept in EVM-storage containing Witnet-provided response metadata and result.\n    struct Response {\n        address reporter;       // Address from which the result was reported.\n        uint256 timestamp;      // Timestamp of the Witnet-provided result.\n        bytes32 drTxHash;       // Hash of the Witnet transaction that solved the queried Data Request.\n        bytes   cborBytes;      // Witnet-provided result CBOR-bytes to the queried Data Request.\n    }\n\n    /// Data struct containing the Witnet-provided result to a Data Request.\n    struct Result {\n        bool success;           // Flag stating whether the request could get solved successfully, or not.\n        CBOR value;             // Resulting value, in CBOR-serialized bytes.\n    }\n\n    /// Data struct following the RFC-7049 standard: Concise Binary Object Representation.\n    struct CBOR {\n        Buffer buffer;\n        uint8 initialByte;\n        uint8 majorType;\n        uint8 additionalInformation;\n        uint64 len;\n        uint64 tag;\n    }\n\n    /// Iterable bytes buffer.\n    struct Buffer {\n        bytes data;\n        uint32 cursor;\n    }\n\n    /// Witnet error codes table.\n    enum ErrorCodes {\n        // 0x00: Unknown error. Something went really bad!\n        Unknown,\n        // Script format errors\n        /// 0x01: At least one of the source scripts is not a valid CBOR-encoded value.\n        SourceScriptNotCBOR,\n        /// 0x02: The CBOR value decoded from a source script is not an Array.\n        SourceScriptNotArray,\n        /// 0x03: The Array value decoded form a source script is not a valid Data Request.\n        SourceScriptNotRADON,\n        /// Unallocated\n        ScriptFormat0x04,\n        ScriptFormat0x05,\n        ScriptFormat0x06,\n        ScriptFormat0x07,\n        ScriptFormat0x08,\n        ScriptFormat0x09,\n        ScriptFormat0x0A,\n        ScriptFormat0x0B,\n        ScriptFormat0x0C,\n        ScriptFormat0x0D,\n        ScriptFormat0x0E,\n        ScriptFormat0x0F,\n        // Complexity errors\n        /// 0x10: The request contains too many sources.\n        RequestTooManySources,\n        /// 0x11: The script contains too many calls.\n        ScriptTooManyCalls,\n        /// Unallocated\n        Complexity0x12,\n        Complexity0x13,\n        Complexity0x14,\n        Complexity0x15,\n        Complexity0x16,\n        Complexity0x17,\n        Complexity0x18,\n        Complexity0x19,\n        Complexity0x1A,\n        Complexity0x1B,\n        Complexity0x1C,\n        Complexity0x1D,\n        Complexity0x1E,\n        Complexity0x1F,\n        // Operator errors\n        /// 0x20: The operator does not exist.\n        UnsupportedOperator,\n        /// Unallocated\n        Operator0x21,\n        Operator0x22,\n        Operator0x23,\n        Operator0x24,\n        Operator0x25,\n        Operator0x26,\n        Operator0x27,\n        Operator0x28,\n        Operator0x29,\n        Operator0x2A,\n        Operator0x2B,\n        Operator0x2C,\n        Operator0x2D,\n        Operator0x2E,\n        Operator0x2F,\n        // Retrieval-specific errors\n        /// 0x30: At least one of the sources could not be retrieved, but returned HTTP error.\n        HTTP,\n        /// 0x31: Retrieval of at least one of the sources timed out.\n        RetrievalTimeout,\n        /// Unallocated\n        Retrieval0x32,\n        Retrieval0x33,\n        Retrieval0x34,\n        Retrieval0x35,\n        Retrieval0x36,\n        Retrieval0x37,\n        Retrieval0x38,\n        Retrieval0x39,\n        Retrieval0x3A,\n        Retrieval0x3B,\n        Retrieval0x3C,\n        Retrieval0x3D,\n        Retrieval0x3E,\n        Retrieval0x3F,\n        // Math errors\n        /// 0x40: Math operator caused an underflow.\n        Underflow,\n        /// 0x41: Math operator caused an overflow.\n        Overflow,\n        /// 0x42: Tried to divide by zero.\n        DivisionByZero,\n        /// Unallocated\n        Math0x43,\n        Math0x44,\n        Math0x45,\n        Math0x46,\n        Math0x47,\n        Math0x48,\n        Math0x49,\n        Math0x4A,\n        Math0x4B,\n        Math0x4C,\n        Math0x4D,\n        Math0x4E,\n        Math0x4F,\n        // Other errors\n        /// 0x50: Received zero reveals\n        NoReveals,\n        /// 0x51: Insufficient consensus in tally precondition clause\n        InsufficientConsensus,\n        /// 0x52: Received zero commits\n        InsufficientCommits,\n        /// 0x53: Generic error during tally execution\n        TallyExecution,\n        /// Unallocated\n        OtherError0x54,\n        OtherError0x55,\n        OtherError0x56,\n        OtherError0x57,\n        OtherError0x58,\n        OtherError0x59,\n        OtherError0x5A,\n        OtherError0x5B,\n        OtherError0x5C,\n        OtherError0x5D,\n        OtherError0x5E,\n        OtherError0x5F,\n        /// 0x60: Invalid reveal serialization (malformed reveals are converted to this value)\n        MalformedReveal,\n        /// Unallocated\n        OtherError0x61,\n        OtherError0x62,\n        OtherError0x63,\n        OtherError0x64,\n        OtherError0x65,\n        OtherError0x66,\n        OtherError0x67,\n        OtherError0x68,\n        OtherError0x69,\n        OtherError0x6A,\n        OtherError0x6B,\n        OtherError0x6C,\n        OtherError0x6D,\n        OtherError0x6E,\n        OtherError0x6F,\n        // Access errors\n        /// 0x70: Tried to access a value from an index using an index that is out of bounds\n        ArrayIndexOutOfBounds,\n        /// 0x71: Tried to access a value from a map using a key that does not exist\n        MapKeyNotFound,\n        /// Unallocated\n        OtherError0x72,\n        OtherError0x73,\n        OtherError0x74,\n        OtherError0x75,\n        OtherError0x76,\n        OtherError0x77,\n        OtherError0x78,\n        OtherError0x79,\n        OtherError0x7A,\n        OtherError0x7B,\n        OtherError0x7C,\n        OtherError0x7D,\n        OtherError0x7E,\n        OtherError0x7F,\n        OtherError0x80,\n        OtherError0x81,\n        OtherError0x82,\n        OtherError0x83,\n        OtherError0x84,\n        OtherError0x85,\n        OtherError0x86,\n        OtherError0x87,\n        OtherError0x88,\n        OtherError0x89,\n        OtherError0x8A,\n        OtherError0x8B,\n        OtherError0x8C,\n        OtherError0x8D,\n        OtherError0x8E,\n        OtherError0x8F,\n        OtherError0x90,\n        OtherError0x91,\n        OtherError0x92,\n        OtherError0x93,\n        OtherError0x94,\n        OtherError0x95,\n        OtherError0x96,\n        OtherError0x97,\n        OtherError0x98,\n        OtherError0x99,\n        OtherError0x9A,\n        OtherError0x9B,\n        OtherError0x9C,\n        OtherError0x9D,\n        OtherError0x9E,\n        OtherError0x9F,\n        OtherError0xA0,\n        OtherError0xA1,\n        OtherError0xA2,\n        OtherError0xA3,\n        OtherError0xA4,\n        OtherError0xA5,\n        OtherError0xA6,\n        OtherError0xA7,\n        OtherError0xA8,\n        OtherError0xA9,\n        OtherError0xAA,\n        OtherError0xAB,\n        OtherError0xAC,\n        OtherError0xAD,\n        OtherError0xAE,\n        OtherError0xAF,\n        OtherError0xB0,\n        OtherError0xB1,\n        OtherError0xB2,\n        OtherError0xB3,\n        OtherError0xB4,\n        OtherError0xB5,\n        OtherError0xB6,\n        OtherError0xB7,\n        OtherError0xB8,\n        OtherError0xB9,\n        OtherError0xBA,\n        OtherError0xBB,\n        OtherError0xBC,\n        OtherError0xBD,\n        OtherError0xBE,\n        OtherError0xBF,\n        OtherError0xC0,\n        OtherError0xC1,\n        OtherError0xC2,\n        OtherError0xC3,\n        OtherError0xC4,\n        OtherError0xC5,\n        OtherError0xC6,\n        OtherError0xC7,\n        OtherError0xC8,\n        OtherError0xC9,\n        OtherError0xCA,\n        OtherError0xCB,\n        OtherError0xCC,\n        OtherError0xCD,\n        OtherError0xCE,\n        OtherError0xCF,\n        OtherError0xD0,\n        OtherError0xD1,\n        OtherError0xD2,\n        OtherError0xD3,\n        OtherError0xD4,\n        OtherError0xD5,\n        OtherError0xD6,\n        OtherError0xD7,\n        OtherError0xD8,\n        OtherError0xD9,\n        OtherError0xDA,\n        OtherError0xDB,\n        OtherError0xDC,\n        OtherError0xDD,\n        OtherError0xDE,\n        OtherError0xDF,\n        // Bridge errors: errors that only belong in inter-client communication\n        /// 0xE0: Requests that cannot be parsed must always get this error as their result.\n        /// However, this is not a valid result in a Tally transaction, because invalid requests\n        /// are never included into blocks and therefore never get a Tally in response.\n        BridgeMalformedRequest,\n        /// 0xE1: Witnesses exceeds 100\n        BridgePoorIncentives,\n        /// 0xE2: The request is rejected on the grounds that it may cause the submitter to spend or stake an\n        /// amount of value that is unjustifiably high when compared with the reward they will be getting\n        BridgeOversizedResult,\n        /// Unallocated\n        OtherError0xE3,\n        OtherError0xE4,\n        OtherError0xE5,\n        OtherError0xE6,\n        OtherError0xE7,\n        OtherError0xE8,\n        OtherError0xE9,\n        OtherError0xEA,\n        OtherError0xEB,\n        OtherError0xEC,\n        OtherError0xED,\n        OtherError0xEE,\n        OtherError0xEF,\n        OtherError0xF0,\n        OtherError0xF1,\n        OtherError0xF2,\n        OtherError0xF3,\n        OtherError0xF4,\n        OtherError0xF5,\n        OtherError0xF6,\n        OtherError0xF7,\n        OtherError0xF8,\n        OtherError0xF9,\n        OtherError0xFA,\n        OtherError0xFB,\n        OtherError0xFC,\n        OtherError0xFD,\n        OtherError0xFE,\n        // This should not exist:\n        /// 0xFF: Some tally error is not intercepted but should\n        UnhandledIntercept\n    }\n}\n",
+  "sourcePath": "witnet-solidity-bridge\\contracts\\libs\\Witnet.sol",
+  "ast": {
+    "absolutePath": "witnet-solidity-bridge/contracts/libs/Witnet.sol",
+    "exportedSymbols": {
+      "IWitnetRequest": [
+        6179
+      ],
+      "Witnet": [
+        6514
+      ]
+    },
+    "id": 6515,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 6181,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.7",
+          ".0",
+          "<",
+          "0.9",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:31:39"
+      },
+      {
+        "id": 6182,
+        "literals": [
+          "experimental",
+          "ABIEncoderV2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "65:33:39"
+      },
+      {
+        "absolutePath": "witnet-solidity-bridge/contracts/interfaces/IWitnetRequest.sol",
+        "file": "../interfaces/IWitnetRequest.sol",
+        "id": 6183,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 6515,
+        "sourceUnit": 6180,
+        "src": "100:42:39",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "Witnet",
+        "contractDependencies": [],
+        "contractKind": "library",
+        "fullyImplemented": true,
+        "id": 6514,
+        "linearizedBaseContracts": [
+          6514
+        ],
+        "name": "Witnet",
+        "nameLocation": "152:6:39",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": {
+              "id": 6195,
+              "nodeType": "Block",
+              "src": "368:41:39",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "id": 6192,
+                        "name": "_bytecode",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 6186,
+                        "src": "392:9:39",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes_memory_ptr",
+                          "typeString": "bytes memory"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes_memory_ptr",
+                          "typeString": "bytes memory"
+                        }
+                      ],
+                      "id": 6191,
+                      "name": "sha256",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 4294967274,
+                      "src": "385:6:39",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_sha256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
+                        "typeString": "function (bytes memory) pure returns (bytes32)"
+                      }
+                    },
+                    "id": 6193,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "385:17:39",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "functionReturnParameters": 6190,
+                  "id": 6194,
+                  "nodeType": "Return",
+                  "src": "378:24:39"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 6184,
+              "nodeType": "StructuredDocumentation",
+              "src": "166:127:39",
+              "text": "@notice Witnet function that computes the hash of a CBOR-encoded Data Request.\n @param _bytecode CBOR-encoded RADON."
+            },
+            "id": 6196,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "hash",
+            "nameLocation": "307:4:39",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 6187,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6186,
+                  "mutability": "mutable",
+                  "name": "_bytecode",
+                  "nameLocation": "325:9:39",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6196,
+                  "src": "312:22:39",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_memory_ptr",
+                    "typeString": "bytes"
+                  },
+                  "typeName": {
+                    "id": 6185,
+                    "name": "bytes",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "312:5:39",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes_storage_ptr",
+                      "typeString": "bytes"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "311:24:39"
+            },
+            "returnParameters": {
+              "id": 6190,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 6189,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 6196,
+                  "src": "359:7:39",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  },
+                  "typeName": {
+                    "id": 6188,
+                    "name": "bytes32",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "359:7:39",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "358:9:39"
+            },
+            "scope": 6514,
+            "src": "298:111:39",
+            "stateMutability": "pure",
+            "virtual": false,
+            "visibility": "internal"
+          },
+          {
+            "canonicalName": "Witnet.Query",
+            "id": 6205,
+            "members": [
+              {
+                "constant": false,
+                "id": 6199,
+                "mutability": "mutable",
+                "name": "request",
+                "nameLocation": "561:7:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6205,
+                "src": "553:15:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_Request_$6222_storage_ptr",
+                  "typeString": "struct Witnet.Request"
+                },
+                "typeName": {
+                  "id": 6198,
+                  "nodeType": "UserDefinedTypeName",
+                  "pathNode": {
+                    "id": 6197,
+                    "name": "Request",
+                    "nodeType": "IdentifierPath",
+                    "referencedDeclaration": 6222,
+                    "src": "553:7:39"
+                  },
+                  "referencedDeclaration": 6222,
+                  "src": "553:7:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Request_$6222_storage_ptr",
+                    "typeString": "struct Witnet.Request"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6202,
+                "mutability": "mutable",
+                "name": "response",
+                "nameLocation": "587:8:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6205,
+                "src": "578:17:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_Response_$6231_storage_ptr",
+                  "typeString": "struct Witnet.Response"
+                },
+                "typeName": {
+                  "id": 6201,
+                  "nodeType": "UserDefinedTypeName",
+                  "pathNode": {
+                    "id": 6200,
+                    "name": "Response",
+                    "nodeType": "IdentifierPath",
+                    "referencedDeclaration": 6231,
+                    "src": "578:8:39"
+                  },
+                  "referencedDeclaration": 6231,
+                  "src": "578:8:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Response_$6231_storage_ptr",
+                    "typeString": "struct Witnet.Response"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6204,
+                "mutability": "mutable",
+                "name": "from",
+                "nameLocation": "613:4:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6205,
+                "src": "605:12:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 6203,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "605:7:39",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Query",
+            "nameLocation": "537:5:39",
+            "nodeType": "StructDefinition",
+            "scope": 6514,
+            "src": "530:145:39",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "Witnet.QueryStatus",
+            "id": 6210,
+            "members": [
+              {
+                "id": 6206,
+                "name": "Unknown",
+                "nameLocation": "751:7:39",
+                "nodeType": "EnumValue",
+                "src": "751:7:39"
+              },
+              {
+                "id": 6207,
+                "name": "Posted",
+                "nameLocation": "768:6:39",
+                "nodeType": "EnumValue",
+                "src": "768:6:39"
+              },
+              {
+                "id": 6208,
+                "name": "Reported",
+                "nameLocation": "784:8:39",
+                "nodeType": "EnumValue",
+                "src": "784:8:39"
+              },
+              {
+                "id": 6209,
+                "name": "Deleted",
+                "nameLocation": "802:7:39",
+                "nodeType": "EnumValue",
+                "src": "802:7:39"
+              }
+            ],
+            "name": "QueryStatus",
+            "nameLocation": "729:11:39",
+            "nodeType": "EnumDefinition",
+            "src": "724:91:39"
+          },
+          {
+            "canonicalName": "Witnet.Request",
+            "id": 6222,
+            "members": [
+              {
+                "constant": false,
+                "id": 6213,
+                "mutability": "mutable",
+                "name": "addr",
+                "nameLocation": "948:4:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6222,
+                "src": "933:19:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_contract$_IWitnetRequest_$6179",
+                  "typeString": "contract IWitnetRequest"
+                },
+                "typeName": {
+                  "id": 6212,
+                  "nodeType": "UserDefinedTypeName",
+                  "pathNode": {
+                    "id": 6211,
+                    "name": "IWitnetRequest",
+                    "nodeType": "IdentifierPath",
+                    "referencedDeclaration": 6179,
+                    "src": "933:14:39"
+                  },
+                  "referencedDeclaration": 6179,
+                  "src": "933:14:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_contract$_IWitnetRequest_$6179",
+                    "typeString": "contract IWitnetRequest"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6215,
+                "mutability": "mutable",
+                "name": "requester",
+                "nameLocation": "1053:9:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6222,
+                "src": "1045:17:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 6214,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1045:7:39",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6217,
+                "mutability": "mutable",
+                "name": "hash",
+                "nameLocation": "1131:4:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6222,
+                "src": "1123:12:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 6216,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1123:7:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6219,
+                "mutability": "mutable",
+                "name": "gasprice",
+                "nameLocation": "1227:8:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6222,
+                "src": "1219:16:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 6218,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1219:7:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6221,
+                "mutability": "mutable",
+                "name": "reward",
+                "nameLocation": "1326:6:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6222,
+                "src": "1318:14:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 6220,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1318:7:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Request",
+            "nameLocation": "915:7:39",
+            "nodeType": "StructDefinition",
+            "scope": 6514,
+            "src": "908:489:39",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "Witnet.Response",
+            "id": 6231,
+            "members": [
+              {
+                "constant": false,
+                "id": 6224,
+                "mutability": "mutable",
+                "name": "reporter",
+                "nameLocation": "1527:8:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6231,
+                "src": "1519:16:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address",
+                  "typeString": "address"
+                },
+                "typeName": {
+                  "id": 6223,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1519:7:39",
+                  "stateMutability": "nonpayable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6226,
+                "mutability": "mutable",
+                "name": "timestamp",
+                "nameLocation": "1606:9:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6231,
+                "src": "1598:17:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 6225,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1598:7:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6228,
+                "mutability": "mutable",
+                "name": "drTxHash",
+                "nameLocation": "1682:8:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6231,
+                "src": "1674:16:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes32",
+                  "typeString": "bytes32"
+                },
+                "typeName": {
+                  "id": 6227,
+                  "name": "bytes32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1674:7:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes32",
+                    "typeString": "bytes32"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6230,
+                "mutability": "mutable",
+                "name": "cborBytes",
+                "nameLocation": "1786:9:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6231,
+                "src": "1778:17:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes_storage_ptr",
+                  "typeString": "bytes"
+                },
+                "typeName": {
+                  "id": 6229,
+                  "name": "bytes",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1778:5:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_storage_ptr",
+                    "typeString": "bytes"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Response",
+            "nameLocation": "1500:8:39",
+            "nodeType": "StructDefinition",
+            "scope": 6514,
+            "src": "1493:380:39",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "Witnet.Result",
+            "id": 6237,
+            "members": [
+              {
+                "constant": false,
+                "id": 6233,
+                "mutability": "mutable",
+                "name": "success",
+                "nameLocation": "1985:7:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6237,
+                "src": "1980:12:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 6232,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "1980:4:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6236,
+                "mutability": "mutable",
+                "name": "value",
+                "nameLocation": "2092:5:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6237,
+                "src": "2087:10:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_CBOR_$6251_storage_ptr",
+                  "typeString": "struct Witnet.CBOR"
+                },
+                "typeName": {
+                  "id": 6235,
+                  "nodeType": "UserDefinedTypeName",
+                  "pathNode": {
+                    "id": 6234,
+                    "name": "CBOR",
+                    "nodeType": "IdentifierPath",
+                    "referencedDeclaration": 6251,
+                    "src": "2087:4:39"
+                  },
+                  "referencedDeclaration": 6251,
+                  "src": "2087:4:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_CBOR_$6251_storage_ptr",
+                    "typeString": "struct Witnet.CBOR"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Result",
+            "nameLocation": "1963:6:39",
+            "nodeType": "StructDefinition",
+            "scope": 6514,
+            "src": "1956:206:39",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "Witnet.CBOR",
+            "id": 6251,
+            "members": [
+              {
+                "constant": false,
+                "id": 6240,
+                "mutability": "mutable",
+                "name": "buffer",
+                "nameLocation": "2288:6:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6251,
+                "src": "2281:13:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_struct$_Buffer_$6256_storage_ptr",
+                  "typeString": "struct Witnet.Buffer"
+                },
+                "typeName": {
+                  "id": 6239,
+                  "nodeType": "UserDefinedTypeName",
+                  "pathNode": {
+                    "id": 6238,
+                    "name": "Buffer",
+                    "nodeType": "IdentifierPath",
+                    "referencedDeclaration": 6256,
+                    "src": "2281:6:39"
+                  },
+                  "referencedDeclaration": 6256,
+                  "src": "2281:6:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_struct$_Buffer_$6256_storage_ptr",
+                    "typeString": "struct Witnet.Buffer"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6242,
+                "mutability": "mutable",
+                "name": "initialByte",
+                "nameLocation": "2310:11:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6251,
+                "src": "2304:17:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint8",
+                  "typeString": "uint8"
+                },
+                "typeName": {
+                  "id": 6241,
+                  "name": "uint8",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2304:5:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6244,
+                "mutability": "mutable",
+                "name": "majorType",
+                "nameLocation": "2337:9:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6251,
+                "src": "2331:15:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint8",
+                  "typeString": "uint8"
+                },
+                "typeName": {
+                  "id": 6243,
+                  "name": "uint8",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2331:5:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6246,
+                "mutability": "mutable",
+                "name": "additionalInformation",
+                "nameLocation": "2362:21:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6251,
+                "src": "2356:27:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint8",
+                  "typeString": "uint8"
+                },
+                "typeName": {
+                  "id": 6245,
+                  "name": "uint8",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2356:5:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint8",
+                    "typeString": "uint8"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6248,
+                "mutability": "mutable",
+                "name": "len",
+                "nameLocation": "2400:3:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6251,
+                "src": "2393:10:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint64",
+                  "typeString": "uint64"
+                },
+                "typeName": {
+                  "id": 6247,
+                  "name": "uint64",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2393:6:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint64",
+                    "typeString": "uint64"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6250,
+                "mutability": "mutable",
+                "name": "tag",
+                "nameLocation": "2420:3:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6251,
+                "src": "2413:10:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint64",
+                  "typeString": "uint64"
+                },
+                "typeName": {
+                  "id": 6249,
+                  "name": "uint64",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2413:6:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint64",
+                    "typeString": "uint64"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "CBOR",
+            "nameLocation": "2266:4:39",
+            "nodeType": "StructDefinition",
+            "scope": 6514,
+            "src": "2259:171:39",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "Witnet.Buffer",
+            "id": 6256,
+            "members": [
+              {
+                "constant": false,
+                "id": 6253,
+                "mutability": "mutable",
+                "name": "data",
+                "nameLocation": "2497:4:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6256,
+                "src": "2491:10:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bytes_storage_ptr",
+                  "typeString": "bytes"
+                },
+                "typeName": {
+                  "id": 6252,
+                  "name": "bytes",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2491:5:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes_storage_ptr",
+                    "typeString": "bytes"
+                  }
+                },
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6255,
+                "mutability": "mutable",
+                "name": "cursor",
+                "nameLocation": "2518:6:39",
+                "nodeType": "VariableDeclaration",
+                "scope": 6256,
+                "src": "2511:13:39",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint32",
+                  "typeString": "uint32"
+                },
+                "typeName": {
+                  "id": 6254,
+                  "name": "uint32",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "2511:6:39",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint32",
+                    "typeString": "uint32"
+                  }
+                },
+                "visibility": "internal"
+              }
+            ],
+            "name": "Buffer",
+            "nameLocation": "2474:6:39",
+            "nodeType": "StructDefinition",
+            "scope": 6514,
+            "src": "2467:64:39",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "Witnet.ErrorCodes",
+            "id": 6513,
+            "members": [
+              {
+                "id": 6257,
+                "name": "Unknown",
+                "nameLocation": "2656:7:39",
+                "nodeType": "EnumValue",
+                "src": "2656:7:39"
+              },
+              {
+                "id": 6258,
+                "name": "SourceScriptNotCBOR",
+                "nameLocation": "2793:19:39",
+                "nodeType": "EnumValue",
+                "src": "2793:19:39"
+              },
+              {
+                "id": 6259,
+                "name": "SourceScriptNotArray",
+                "nameLocation": "2901:20:39",
+                "nodeType": "EnumValue",
+                "src": "2901:20:39"
+              },
+              {
+                "id": 6260,
+                "name": "SourceScriptNotRADON",
+                "nameLocation": "3023:20:39",
+                "nodeType": "EnumValue",
+                "src": "3023:20:39"
+              },
+              {
+                "id": 6261,
+                "name": "ScriptFormat0x04",
+                "nameLocation": "3077:16:39",
+                "nodeType": "EnumValue",
+                "src": "3077:16:39"
+              },
+              {
+                "id": 6262,
+                "name": "ScriptFormat0x05",
+                "nameLocation": "3103:16:39",
+                "nodeType": "EnumValue",
+                "src": "3103:16:39"
+              },
+              {
+                "id": 6263,
+                "name": "ScriptFormat0x06",
+                "nameLocation": "3129:16:39",
+                "nodeType": "EnumValue",
+                "src": "3129:16:39"
+              },
+              {
+                "id": 6264,
+                "name": "ScriptFormat0x07",
+                "nameLocation": "3155:16:39",
+                "nodeType": "EnumValue",
+                "src": "3155:16:39"
+              },
+              {
+                "id": 6265,
+                "name": "ScriptFormat0x08",
+                "nameLocation": "3181:16:39",
+                "nodeType": "EnumValue",
+                "src": "3181:16:39"
+              },
+              {
+                "id": 6266,
+                "name": "ScriptFormat0x09",
+                "nameLocation": "3207:16:39",
+                "nodeType": "EnumValue",
+                "src": "3207:16:39"
+              },
+              {
+                "id": 6267,
+                "name": "ScriptFormat0x0A",
+                "nameLocation": "3233:16:39",
+                "nodeType": "EnumValue",
+                "src": "3233:16:39"
+              },
+              {
+                "id": 6268,
+                "name": "ScriptFormat0x0B",
+                "nameLocation": "3259:16:39",
+                "nodeType": "EnumValue",
+                "src": "3259:16:39"
+              },
+              {
+                "id": 6269,
+                "name": "ScriptFormat0x0C",
+                "nameLocation": "3285:16:39",
+                "nodeType": "EnumValue",
+                "src": "3285:16:39"
+              },
+              {
+                "id": 6270,
+                "name": "ScriptFormat0x0D",
+                "nameLocation": "3311:16:39",
+                "nodeType": "EnumValue",
+                "src": "3311:16:39"
+              },
+              {
+                "id": 6271,
+                "name": "ScriptFormat0x0E",
+                "nameLocation": "3337:16:39",
+                "nodeType": "EnumValue",
+                "src": "3337:16:39"
+              },
+              {
+                "id": 6272,
+                "name": "ScriptFormat0x0F",
+                "nameLocation": "3363:16:39",
+                "nodeType": "EnumValue",
+                "src": "3363:16:39"
+              },
+              {
+                "id": 6273,
+                "name": "RequestTooManySources",
+                "nameLocation": "3475:21:39",
+                "nodeType": "EnumValue",
+                "src": "3475:21:39"
+              },
+              {
+                "id": 6274,
+                "name": "ScriptTooManyCalls",
+                "nameLocation": "3560:18:39",
+                "nodeType": "EnumValue",
+                "src": "3560:18:39"
+              },
+              {
+                "id": 6275,
+                "name": "Complexity0x12",
+                "nameLocation": "3612:14:39",
+                "nodeType": "EnumValue",
+                "src": "3612:14:39"
+              },
+              {
+                "id": 6276,
+                "name": "Complexity0x13",
+                "nameLocation": "3636:14:39",
+                "nodeType": "EnumValue",
+                "src": "3636:14:39"
+              },
+              {
+                "id": 6277,
+                "name": "Complexity0x14",
+                "nameLocation": "3660:14:39",
+                "nodeType": "EnumValue",
+                "src": "3660:14:39"
+              },
+              {
+                "id": 6278,
+                "name": "Complexity0x15",
+                "nameLocation": "3684:14:39",
+                "nodeType": "EnumValue",
+                "src": "3684:14:39"
+              },
+              {
+                "id": 6279,
+                "name": "Complexity0x16",
+                "nameLocation": "3708:14:39",
+                "nodeType": "EnumValue",
+                "src": "3708:14:39"
+              },
+              {
+                "id": 6280,
+                "name": "Complexity0x17",
+                "nameLocation": "3732:14:39",
+                "nodeType": "EnumValue",
+                "src": "3732:14:39"
+              },
+              {
+                "id": 6281,
+                "name": "Complexity0x18",
+                "nameLocation": "3756:14:39",
+                "nodeType": "EnumValue",
+                "src": "3756:14:39"
+              },
+              {
+                "id": 6282,
+                "name": "Complexity0x19",
+                "nameLocation": "3780:14:39",
+                "nodeType": "EnumValue",
+                "src": "3780:14:39"
+              },
+              {
+                "id": 6283,
+                "name": "Complexity0x1A",
+                "nameLocation": "3804:14:39",
+                "nodeType": "EnumValue",
+                "src": "3804:14:39"
+              },
+              {
+                "id": 6284,
+                "name": "Complexity0x1B",
+                "nameLocation": "3828:14:39",
+                "nodeType": "EnumValue",
+                "src": "3828:14:39"
+              },
+              {
+                "id": 6285,
+                "name": "Complexity0x1C",
+                "nameLocation": "3852:14:39",
+                "nodeType": "EnumValue",
+                "src": "3852:14:39"
+              },
+              {
+                "id": 6286,
+                "name": "Complexity0x1D",
+                "nameLocation": "3876:14:39",
+                "nodeType": "EnumValue",
+                "src": "3876:14:39"
+              },
+              {
+                "id": 6287,
+                "name": "Complexity0x1E",
+                "nameLocation": "3900:14:39",
+                "nodeType": "EnumValue",
+                "src": "3900:14:39"
+              },
+              {
+                "id": 6288,
+                "name": "Complexity0x1F",
+                "nameLocation": "3924:14:39",
+                "nodeType": "EnumValue",
+                "src": "3924:14:39"
+              },
+              {
+                "id": 6289,
+                "name": "UnsupportedOperator",
+                "nameLocation": "4022:19:39",
+                "nodeType": "EnumValue",
+                "src": "4022:19:39"
+              },
+              {
+                "id": 6290,
+                "name": "Operator0x21",
+                "nameLocation": "4075:12:39",
+                "nodeType": "EnumValue",
+                "src": "4075:12:39"
+              },
+              {
+                "id": 6291,
+                "name": "Operator0x22",
+                "nameLocation": "4097:12:39",
+                "nodeType": "EnumValue",
+                "src": "4097:12:39"
+              },
+              {
+                "id": 6292,
+                "name": "Operator0x23",
+                "nameLocation": "4119:12:39",
+                "nodeType": "EnumValue",
+                "src": "4119:12:39"
+              },
+              {
+                "id": 6293,
+                "name": "Operator0x24",
+                "nameLocation": "4141:12:39",
+                "nodeType": "EnumValue",
+                "src": "4141:12:39"
+              },
+              {
+                "id": 6294,
+                "name": "Operator0x25",
+                "nameLocation": "4163:12:39",
+                "nodeType": "EnumValue",
+                "src": "4163:12:39"
+              },
+              {
+                "id": 6295,
+                "name": "Operator0x26",
+                "nameLocation": "4185:12:39",
+                "nodeType": "EnumValue",
+                "src": "4185:12:39"
+              },
+              {
+                "id": 6296,
+                "name": "Operator0x27",
+                "nameLocation": "4207:12:39",
+                "nodeType": "EnumValue",
+                "src": "4207:12:39"
+              },
+              {
+                "id": 6297,
+                "name": "Operator0x28",
+                "nameLocation": "4229:12:39",
+                "nodeType": "EnumValue",
+                "src": "4229:12:39"
+              },
+              {
+                "id": 6298,
+                "name": "Operator0x29",
+                "nameLocation": "4251:12:39",
+                "nodeType": "EnumValue",
+                "src": "4251:12:39"
+              },
+              {
+                "id": 6299,
+                "name": "Operator0x2A",
+                "nameLocation": "4273:12:39",
+                "nodeType": "EnumValue",
+                "src": "4273:12:39"
+              },
+              {
+                "id": 6300,
+                "name": "Operator0x2B",
+                "nameLocation": "4295:12:39",
+                "nodeType": "EnumValue",
+                "src": "4295:12:39"
+              },
+              {
+                "id": 6301,
+                "name": "Operator0x2C",
+                "nameLocation": "4317:12:39",
+                "nodeType": "EnumValue",
+                "src": "4317:12:39"
+              },
+              {
+                "id": 6302,
+                "name": "Operator0x2D",
+                "nameLocation": "4339:12:39",
+                "nodeType": "EnumValue",
+                "src": "4339:12:39"
+              },
+              {
+                "id": 6303,
+                "name": "Operator0x2E",
+                "nameLocation": "4361:12:39",
+                "nodeType": "EnumValue",
+                "src": "4361:12:39"
+              },
+              {
+                "id": 6304,
+                "name": "Operator0x2F",
+                "nameLocation": "4383:12:39",
+                "nodeType": "EnumValue",
+                "src": "4383:12:39"
+              },
+              {
+                "id": 6305,
+                "name": "HTTP",
+                "nameLocation": "4537:4:39",
+                "nodeType": "EnumValue",
+                "src": "4537:4:39"
+              },
+              {
+                "id": 6306,
+                "name": "RetrievalTimeout",
+                "nameLocation": "4621:16:39",
+                "nodeType": "EnumValue",
+                "src": "4621:16:39"
+              },
+              {
+                "id": 6307,
+                "name": "Retrieval0x32",
+                "nameLocation": "4671:13:39",
+                "nodeType": "EnumValue",
+                "src": "4671:13:39"
+              },
+              {
+                "id": 6308,
+                "name": "Retrieval0x33",
+                "nameLocation": "4694:13:39",
+                "nodeType": "EnumValue",
+                "src": "4694:13:39"
+              },
+              {
+                "id": 6309,
+                "name": "Retrieval0x34",
+                "nameLocation": "4717:13:39",
+                "nodeType": "EnumValue",
+                "src": "4717:13:39"
+              },
+              {
+                "id": 6310,
+                "name": "Retrieval0x35",
+                "nameLocation": "4740:13:39",
+                "nodeType": "EnumValue",
+                "src": "4740:13:39"
+              },
+              {
+                "id": 6311,
+                "name": "Retrieval0x36",
+                "nameLocation": "4763:13:39",
+                "nodeType": "EnumValue",
+                "src": "4763:13:39"
+              },
+              {
+                "id": 6312,
+                "name": "Retrieval0x37",
+                "nameLocation": "4786:13:39",
+                "nodeType": "EnumValue",
+                "src": "4786:13:39"
+              },
+              {
+                "id": 6313,
+                "name": "Retrieval0x38",
+                "nameLocation": "4809:13:39",
+                "nodeType": "EnumValue",
+                "src": "4809:13:39"
+              },
+              {
+                "id": 6314,
+                "name": "Retrieval0x39",
+                "nameLocation": "4832:13:39",
+                "nodeType": "EnumValue",
+                "src": "4832:13:39"
+              },
+              {
+                "id": 6315,
+                "name": "Retrieval0x3A",
+                "nameLocation": "4855:13:39",
+                "nodeType": "EnumValue",
+                "src": "4855:13:39"
+              },
+              {
+                "id": 6316,
+                "name": "Retrieval0x3B",
+                "nameLocation": "4878:13:39",
+                "nodeType": "EnumValue",
+                "src": "4878:13:39"
+              },
+              {
+                "id": 6317,
+                "name": "Retrieval0x3C",
+                "nameLocation": "4901:13:39",
+                "nodeType": "EnumValue",
+                "src": "4901:13:39"
+              },
+              {
+                "id": 6318,
+                "name": "Retrieval0x3D",
+                "nameLocation": "4924:13:39",
+                "nodeType": "EnumValue",
+                "src": "4924:13:39"
+              },
+              {
+                "id": 6319,
+                "name": "Retrieval0x3E",
+                "nameLocation": "4947:13:39",
+                "nodeType": "EnumValue",
+                "src": "4947:13:39"
+              },
+              {
+                "id": 6320,
+                "name": "Retrieval0x3F",
+                "nameLocation": "4970:13:39",
+                "nodeType": "EnumValue",
+                "src": "4970:13:39"
+              },
+              {
+                "id": 6321,
+                "name": "Underflow",
+                "nameLocation": "5069:9:39",
+                "nodeType": "EnumValue",
+                "src": "5069:9:39"
+              },
+              {
+                "id": 6322,
+                "name": "Overflow",
+                "nameLocation": "5140:8:39",
+                "nodeType": "EnumValue",
+                "src": "5140:8:39"
+              },
+              {
+                "id": 6323,
+                "name": "DivisionByZero",
+                "nameLocation": "5201:14:39",
+                "nodeType": "EnumValue",
+                "src": "5201:14:39"
+              },
+              {
+                "id": 6324,
+                "name": "Math0x43",
+                "nameLocation": "5249:8:39",
+                "nodeType": "EnumValue",
+                "src": "5249:8:39"
+              },
+              {
+                "id": 6325,
+                "name": "Math0x44",
+                "nameLocation": "5267:8:39",
+                "nodeType": "EnumValue",
+                "src": "5267:8:39"
+              },
+              {
+                "id": 6326,
+                "name": "Math0x45",
+                "nameLocation": "5285:8:39",
+                "nodeType": "EnumValue",
+                "src": "5285:8:39"
+              },
+              {
+                "id": 6327,
+                "name": "Math0x46",
+                "nameLocation": "5303:8:39",
+                "nodeType": "EnumValue",
+                "src": "5303:8:39"
+              },
+              {
+                "id": 6328,
+                "name": "Math0x47",
+                "nameLocation": "5321:8:39",
+                "nodeType": "EnumValue",
+                "src": "5321:8:39"
+              },
+              {
+                "id": 6329,
+                "name": "Math0x48",
+                "nameLocation": "5339:8:39",
+                "nodeType": "EnumValue",
+                "src": "5339:8:39"
+              },
+              {
+                "id": 6330,
+                "name": "Math0x49",
+                "nameLocation": "5357:8:39",
+                "nodeType": "EnumValue",
+                "src": "5357:8:39"
+              },
+              {
+                "id": 6331,
+                "name": "Math0x4A",
+                "nameLocation": "5375:8:39",
+                "nodeType": "EnumValue",
+                "src": "5375:8:39"
+              },
+              {
+                "id": 6332,
+                "name": "Math0x4B",
+                "nameLocation": "5393:8:39",
+                "nodeType": "EnumValue",
+                "src": "5393:8:39"
+              },
+              {
+                "id": 6333,
+                "name": "Math0x4C",
+                "nameLocation": "5411:8:39",
+                "nodeType": "EnumValue",
+                "src": "5411:8:39"
+              },
+              {
+                "id": 6334,
+                "name": "Math0x4D",
+                "nameLocation": "5429:8:39",
+                "nodeType": "EnumValue",
+                "src": "5429:8:39"
+              },
+              {
+                "id": 6335,
+                "name": "Math0x4E",
+                "nameLocation": "5447:8:39",
+                "nodeType": "EnumValue",
+                "src": "5447:8:39"
+              },
+              {
+                "id": 6336,
+                "name": "Math0x4F",
+                "nameLocation": "5465:8:39",
+                "nodeType": "EnumValue",
+                "src": "5465:8:39"
+              },
+              {
+                "id": 6337,
+                "name": "NoReveals",
+                "nameLocation": "5547:9:39",
+                "nodeType": "EnumValue",
+                "src": "5547:9:39"
+              },
+              {
+                "id": 6338,
+                "name": "InsufficientConsensus",
+                "nameLocation": "5636:21:39",
+                "nodeType": "EnumValue",
+                "src": "5636:21:39"
+              },
+              {
+                "id": 6339,
+                "name": "InsufficientCommits",
+                "nameLocation": "5707:19:39",
+                "nodeType": "EnumValue",
+                "src": "5707:19:39"
+              },
+              {
+                "id": 6340,
+                "name": "TallyExecution",
+                "nameLocation": "5791:14:39",
+                "nodeType": "EnumValue",
+                "src": "5791:14:39"
+              },
+              {
+                "id": 6341,
+                "name": "OtherError0x54",
+                "nameLocation": "5839:14:39",
+                "nodeType": "EnumValue",
+                "src": "5839:14:39"
+              },
+              {
+                "id": 6342,
+                "name": "OtherError0x55",
+                "nameLocation": "5863:14:39",
+                "nodeType": "EnumValue",
+                "src": "5863:14:39"
+              },
+              {
+                "id": 6343,
+                "name": "OtherError0x56",
+                "nameLocation": "5887:14:39",
+                "nodeType": "EnumValue",
+                "src": "5887:14:39"
+              },
+              {
+                "id": 6344,
+                "name": "OtherError0x57",
+                "nameLocation": "5911:14:39",
+                "nodeType": "EnumValue",
+                "src": "5911:14:39"
+              },
+              {
+                "id": 6345,
+                "name": "OtherError0x58",
+                "nameLocation": "5935:14:39",
+                "nodeType": "EnumValue",
+                "src": "5935:14:39"
+              },
+              {
+                "id": 6346,
+                "name": "OtherError0x59",
+                "nameLocation": "5959:14:39",
+                "nodeType": "EnumValue",
+                "src": "5959:14:39"
+              },
+              {
+                "id": 6347,
+                "name": "OtherError0x5A",
+                "nameLocation": "5983:14:39",
+                "nodeType": "EnumValue",
+                "src": "5983:14:39"
+              },
+              {
+                "id": 6348,
+                "name": "OtherError0x5B",
+                "nameLocation": "6007:14:39",
+                "nodeType": "EnumValue",
+                "src": "6007:14:39"
+              },
+              {
+                "id": 6349,
+                "name": "OtherError0x5C",
+                "nameLocation": "6031:14:39",
+                "nodeType": "EnumValue",
+                "src": "6031:14:39"
+              },
+              {
+                "id": 6350,
+                "name": "OtherError0x5D",
+                "nameLocation": "6055:14:39",
+                "nodeType": "EnumValue",
+                "src": "6055:14:39"
+              },
+              {
+                "id": 6351,
+                "name": "OtherError0x5E",
+                "nameLocation": "6079:14:39",
+                "nodeType": "EnumValue",
+                "src": "6079:14:39"
+              },
+              {
+                "id": 6352,
+                "name": "OtherError0x5F",
+                "nameLocation": "6103:14:39",
+                "nodeType": "EnumValue",
+                "src": "6103:14:39"
+              },
+              {
+                "id": 6353,
+                "name": "MalformedReveal",
+                "nameLocation": "6222:15:39",
+                "nodeType": "EnumValue",
+                "src": "6222:15:39"
+              },
+              {
+                "id": 6354,
+                "name": "OtherError0x61",
+                "nameLocation": "6271:14:39",
+                "nodeType": "EnumValue",
+                "src": "6271:14:39"
+              },
+              {
+                "id": 6355,
+                "name": "OtherError0x62",
+                "nameLocation": "6295:14:39",
+                "nodeType": "EnumValue",
+                "src": "6295:14:39"
+              },
+              {
+                "id": 6356,
+                "name": "OtherError0x63",
+                "nameLocation": "6319:14:39",
+                "nodeType": "EnumValue",
+                "src": "6319:14:39"
+              },
+              {
+                "id": 6357,
+                "name": "OtherError0x64",
+                "nameLocation": "6343:14:39",
+                "nodeType": "EnumValue",
+                "src": "6343:14:39"
+              },
+              {
+                "id": 6358,
+                "name": "OtherError0x65",
+                "nameLocation": "6367:14:39",
+                "nodeType": "EnumValue",
+                "src": "6367:14:39"
+              },
+              {
+                "id": 6359,
+                "name": "OtherError0x66",
+                "nameLocation": "6391:14:39",
+                "nodeType": "EnumValue",
+                "src": "6391:14:39"
+              },
+              {
+                "id": 6360,
+                "name": "OtherError0x67",
+                "nameLocation": "6415:14:39",
+                "nodeType": "EnumValue",
+                "src": "6415:14:39"
+              },
+              {
+                "id": 6361,
+                "name": "OtherError0x68",
+                "nameLocation": "6439:14:39",
+                "nodeType": "EnumValue",
+                "src": "6439:14:39"
+              },
+              {
+                "id": 6362,
+                "name": "OtherError0x69",
+                "nameLocation": "6463:14:39",
+                "nodeType": "EnumValue",
+                "src": "6463:14:39"
+              },
+              {
+                "id": 6363,
+                "name": "OtherError0x6A",
+                "nameLocation": "6487:14:39",
+                "nodeType": "EnumValue",
+                "src": "6487:14:39"
+              },
+              {
+                "id": 6364,
+                "name": "OtherError0x6B",
+                "nameLocation": "6511:14:39",
+                "nodeType": "EnumValue",
+                "src": "6511:14:39"
+              },
+              {
+                "id": 6365,
+                "name": "OtherError0x6C",
+                "nameLocation": "6535:14:39",
+                "nodeType": "EnumValue",
+                "src": "6535:14:39"
+              },
+              {
+                "id": 6366,
+                "name": "OtherError0x6D",
+                "nameLocation": "6559:14:39",
+                "nodeType": "EnumValue",
+                "src": "6559:14:39"
+              },
+              {
+                "id": 6367,
+                "name": "OtherError0x6E",
+                "nameLocation": "6583:14:39",
+                "nodeType": "EnumValue",
+                "src": "6583:14:39"
+              },
+              {
+                "id": 6368,
+                "name": "OtherError0x6F",
+                "nameLocation": "6607:14:39",
+                "nodeType": "EnumValue",
+                "src": "6607:14:39"
+              },
+              {
+                "id": 6369,
+                "name": "ArrayIndexOutOfBounds",
+                "nameLocation": "6749:21:39",
+                "nodeType": "EnumValue",
+                "src": "6749:21:39"
+              },
+              {
+                "id": 6370,
+                "name": "MapKeyNotFound",
+                "nameLocation": "6865:14:39",
+                "nodeType": "EnumValue",
+                "src": "6865:14:39"
+              },
+              {
+                "id": 6371,
+                "name": "OtherError0x72",
+                "nameLocation": "6913:14:39",
+                "nodeType": "EnumValue",
+                "src": "6913:14:39"
+              },
+              {
+                "id": 6372,
+                "name": "OtherError0x73",
+                "nameLocation": "6937:14:39",
+                "nodeType": "EnumValue",
+                "src": "6937:14:39"
+              },
+              {
+                "id": 6373,
+                "name": "OtherError0x74",
+                "nameLocation": "6961:14:39",
+                "nodeType": "EnumValue",
+                "src": "6961:14:39"
+              },
+              {
+                "id": 6374,
+                "name": "OtherError0x75",
+                "nameLocation": "6985:14:39",
+                "nodeType": "EnumValue",
+                "src": "6985:14:39"
+              },
+              {
+                "id": 6375,
+                "name": "OtherError0x76",
+                "nameLocation": "7009:14:39",
+                "nodeType": "EnumValue",
+                "src": "7009:14:39"
+              },
+              {
+                "id": 6376,
+                "name": "OtherError0x77",
+                "nameLocation": "7033:14:39",
+                "nodeType": "EnumValue",
+                "src": "7033:14:39"
+              },
+              {
+                "id": 6377,
+                "name": "OtherError0x78",
+                "nameLocation": "7057:14:39",
+                "nodeType": "EnumValue",
+                "src": "7057:14:39"
+              },
+              {
+                "id": 6378,
+                "name": "OtherError0x79",
+                "nameLocation": "7081:14:39",
+                "nodeType": "EnumValue",
+                "src": "7081:14:39"
+              },
+              {
+                "id": 6379,
+                "name": "OtherError0x7A",
+                "nameLocation": "7105:14:39",
+                "nodeType": "EnumValue",
+                "src": "7105:14:39"
+              },
+              {
+                "id": 6380,
+                "name": "OtherError0x7B",
+                "nameLocation": "7129:14:39",
+                "nodeType": "EnumValue",
+                "src": "7129:14:39"
+              },
+              {
+                "id": 6381,
+                "name": "OtherError0x7C",
+                "nameLocation": "7153:14:39",
+                "nodeType": "EnumValue",
+                "src": "7153:14:39"
+              },
+              {
+                "id": 6382,
+                "name": "OtherError0x7D",
+                "nameLocation": "7177:14:39",
+                "nodeType": "EnumValue",
+                "src": "7177:14:39"
+              },
+              {
+                "id": 6383,
+                "name": "OtherError0x7E",
+                "nameLocation": "7201:14:39",
+                "nodeType": "EnumValue",
+                "src": "7201:14:39"
+              },
+              {
+                "id": 6384,
+                "name": "OtherError0x7F",
+                "nameLocation": "7225:14:39",
+                "nodeType": "EnumValue",
+                "src": "7225:14:39"
+              },
+              {
+                "id": 6385,
+                "name": "OtherError0x80",
+                "nameLocation": "7249:14:39",
+                "nodeType": "EnumValue",
+                "src": "7249:14:39"
+              },
+              {
+                "id": 6386,
+                "name": "OtherError0x81",
+                "nameLocation": "7273:14:39",
+                "nodeType": "EnumValue",
+                "src": "7273:14:39"
+              },
+              {
+                "id": 6387,
+                "name": "OtherError0x82",
+                "nameLocation": "7297:14:39",
+                "nodeType": "EnumValue",
+                "src": "7297:14:39"
+              },
+              {
+                "id": 6388,
+                "name": "OtherError0x83",
+                "nameLocation": "7321:14:39",
+                "nodeType": "EnumValue",
+                "src": "7321:14:39"
+              },
+              {
+                "id": 6389,
+                "name": "OtherError0x84",
+                "nameLocation": "7345:14:39",
+                "nodeType": "EnumValue",
+                "src": "7345:14:39"
+              },
+              {
+                "id": 6390,
+                "name": "OtherError0x85",
+                "nameLocation": "7369:14:39",
+                "nodeType": "EnumValue",
+                "src": "7369:14:39"
+              },
+              {
+                "id": 6391,
+                "name": "OtherError0x86",
+                "nameLocation": "7393:14:39",
+                "nodeType": "EnumValue",
+                "src": "7393:14:39"
+              },
+              {
+                "id": 6392,
+                "name": "OtherError0x87",
+                "nameLocation": "7417:14:39",
+                "nodeType": "EnumValue",
+                "src": "7417:14:39"
+              },
+              {
+                "id": 6393,
+                "name": "OtherError0x88",
+                "nameLocation": "7441:14:39",
+                "nodeType": "EnumValue",
+                "src": "7441:14:39"
+              },
+              {
+                "id": 6394,
+                "name": "OtherError0x89",
+                "nameLocation": "7465:14:39",
+                "nodeType": "EnumValue",
+                "src": "7465:14:39"
+              },
+              {
+                "id": 6395,
+                "name": "OtherError0x8A",
+                "nameLocation": "7489:14:39",
+                "nodeType": "EnumValue",
+                "src": "7489:14:39"
+              },
+              {
+                "id": 6396,
+                "name": "OtherError0x8B",
+                "nameLocation": "7513:14:39",
+                "nodeType": "EnumValue",
+                "src": "7513:14:39"
+              },
+              {
+                "id": 6397,
+                "name": "OtherError0x8C",
+                "nameLocation": "7537:14:39",
+                "nodeType": "EnumValue",
+                "src": "7537:14:39"
+              },
+              {
+                "id": 6398,
+                "name": "OtherError0x8D",
+                "nameLocation": "7561:14:39",
+                "nodeType": "EnumValue",
+                "src": "7561:14:39"
+              },
+              {
+                "id": 6399,
+                "name": "OtherError0x8E",
+                "nameLocation": "7585:14:39",
+                "nodeType": "EnumValue",
+                "src": "7585:14:39"
+              },
+              {
+                "id": 6400,
+                "name": "OtherError0x8F",
+                "nameLocation": "7609:14:39",
+                "nodeType": "EnumValue",
+                "src": "7609:14:39"
+              },
+              {
+                "id": 6401,
+                "name": "OtherError0x90",
+                "nameLocation": "7633:14:39",
+                "nodeType": "EnumValue",
+                "src": "7633:14:39"
+              },
+              {
+                "id": 6402,
+                "name": "OtherError0x91",
+                "nameLocation": "7657:14:39",
+                "nodeType": "EnumValue",
+                "src": "7657:14:39"
+              },
+              {
+                "id": 6403,
+                "name": "OtherError0x92",
+                "nameLocation": "7681:14:39",
+                "nodeType": "EnumValue",
+                "src": "7681:14:39"
+              },
+              {
+                "id": 6404,
+                "name": "OtherError0x93",
+                "nameLocation": "7705:14:39",
+                "nodeType": "EnumValue",
+                "src": "7705:14:39"
+              },
+              {
+                "id": 6405,
+                "name": "OtherError0x94",
+                "nameLocation": "7729:14:39",
+                "nodeType": "EnumValue",
+                "src": "7729:14:39"
+              },
+              {
+                "id": 6406,
+                "name": "OtherError0x95",
+                "nameLocation": "7753:14:39",
+                "nodeType": "EnumValue",
+                "src": "7753:14:39"
+              },
+              {
+                "id": 6407,
+                "name": "OtherError0x96",
+                "nameLocation": "7777:14:39",
+                "nodeType": "EnumValue",
+                "src": "7777:14:39"
+              },
+              {
+                "id": 6408,
+                "name": "OtherError0x97",
+                "nameLocation": "7801:14:39",
+                "nodeType": "EnumValue",
+                "src": "7801:14:39"
+              },
+              {
+                "id": 6409,
+                "name": "OtherError0x98",
+                "nameLocation": "7825:14:39",
+                "nodeType": "EnumValue",
+                "src": "7825:14:39"
+              },
+              {
+                "id": 6410,
+                "name": "OtherError0x99",
+                "nameLocation": "7849:14:39",
+                "nodeType": "EnumValue",
+                "src": "7849:14:39"
+              },
+              {
+                "id": 6411,
+                "name": "OtherError0x9A",
+                "nameLocation": "7873:14:39",
+                "nodeType": "EnumValue",
+                "src": "7873:14:39"
+              },
+              {
+                "id": 6412,
+                "name": "OtherError0x9B",
+                "nameLocation": "7897:14:39",
+                "nodeType": "EnumValue",
+                "src": "7897:14:39"
+              },
+              {
+                "id": 6413,
+                "name": "OtherError0x9C",
+                "nameLocation": "7921:14:39",
+                "nodeType": "EnumValue",
+                "src": "7921:14:39"
+              },
+              {
+                "id": 6414,
+                "name": "OtherError0x9D",
+                "nameLocation": "7945:14:39",
+                "nodeType": "EnumValue",
+                "src": "7945:14:39"
+              },
+              {
+                "id": 6415,
+                "name": "OtherError0x9E",
+                "nameLocation": "7969:14:39",
+                "nodeType": "EnumValue",
+                "src": "7969:14:39"
+              },
+              {
+                "id": 6416,
+                "name": "OtherError0x9F",
+                "nameLocation": "7993:14:39",
+                "nodeType": "EnumValue",
+                "src": "7993:14:39"
+              },
+              {
+                "id": 6417,
+                "name": "OtherError0xA0",
+                "nameLocation": "8017:14:39",
+                "nodeType": "EnumValue",
+                "src": "8017:14:39"
+              },
+              {
+                "id": 6418,
+                "name": "OtherError0xA1",
+                "nameLocation": "8041:14:39",
+                "nodeType": "EnumValue",
+                "src": "8041:14:39"
+              },
+              {
+                "id": 6419,
+                "name": "OtherError0xA2",
+                "nameLocation": "8065:14:39",
+                "nodeType": "EnumValue",
+                "src": "8065:14:39"
+              },
+              {
+                "id": 6420,
+                "name": "OtherError0xA3",
+                "nameLocation": "8089:14:39",
+                "nodeType": "EnumValue",
+                "src": "8089:14:39"
+              },
+              {
+                "id": 6421,
+                "name": "OtherError0xA4",
+                "nameLocation": "8113:14:39",
+                "nodeType": "EnumValue",
+                "src": "8113:14:39"
+              },
+              {
+                "id": 6422,
+                "name": "OtherError0xA5",
+                "nameLocation": "8137:14:39",
+                "nodeType": "EnumValue",
+                "src": "8137:14:39"
+              },
+              {
+                "id": 6423,
+                "name": "OtherError0xA6",
+                "nameLocation": "8161:14:39",
+                "nodeType": "EnumValue",
+                "src": "8161:14:39"
+              },
+              {
+                "id": 6424,
+                "name": "OtherError0xA7",
+                "nameLocation": "8185:14:39",
+                "nodeType": "EnumValue",
+                "src": "8185:14:39"
+              },
+              {
+                "id": 6425,
+                "name": "OtherError0xA8",
+                "nameLocation": "8209:14:39",
+                "nodeType": "EnumValue",
+                "src": "8209:14:39"
+              },
+              {
+                "id": 6426,
+                "name": "OtherError0xA9",
+                "nameLocation": "8233:14:39",
+                "nodeType": "EnumValue",
+                "src": "8233:14:39"
+              },
+              {
+                "id": 6427,
+                "name": "OtherError0xAA",
+                "nameLocation": "8257:14:39",
+                "nodeType": "EnumValue",
+                "src": "8257:14:39"
+              },
+              {
+                "id": 6428,
+                "name": "OtherError0xAB",
+                "nameLocation": "8281:14:39",
+                "nodeType": "EnumValue",
+                "src": "8281:14:39"
+              },
+              {
+                "id": 6429,
+                "name": "OtherError0xAC",
+                "nameLocation": "8305:14:39",
+                "nodeType": "EnumValue",
+                "src": "8305:14:39"
+              },
+              {
+                "id": 6430,
+                "name": "OtherError0xAD",
+                "nameLocation": "8329:14:39",
+                "nodeType": "EnumValue",
+                "src": "8329:14:39"
+              },
+              {
+                "id": 6431,
+                "name": "OtherError0xAE",
+                "nameLocation": "8353:14:39",
+                "nodeType": "EnumValue",
+                "src": "8353:14:39"
+              },
+              {
+                "id": 6432,
+                "name": "OtherError0xAF",
+                "nameLocation": "8377:14:39",
+                "nodeType": "EnumValue",
+                "src": "8377:14:39"
+              },
+              {
+                "id": 6433,
+                "name": "OtherError0xB0",
+                "nameLocation": "8401:14:39",
+                "nodeType": "EnumValue",
+                "src": "8401:14:39"
+              },
+              {
+                "id": 6434,
+                "name": "OtherError0xB1",
+                "nameLocation": "8425:14:39",
+                "nodeType": "EnumValue",
+                "src": "8425:14:39"
+              },
+              {
+                "id": 6435,
+                "name": "OtherError0xB2",
+                "nameLocation": "8449:14:39",
+                "nodeType": "EnumValue",
+                "src": "8449:14:39"
+              },
+              {
+                "id": 6436,
+                "name": "OtherError0xB3",
+                "nameLocation": "8473:14:39",
+                "nodeType": "EnumValue",
+                "src": "8473:14:39"
+              },
+              {
+                "id": 6437,
+                "name": "OtherError0xB4",
+                "nameLocation": "8497:14:39",
+                "nodeType": "EnumValue",
+                "src": "8497:14:39"
+              },
+              {
+                "id": 6438,
+                "name": "OtherError0xB5",
+                "nameLocation": "8521:14:39",
+                "nodeType": "EnumValue",
+                "src": "8521:14:39"
+              },
+              {
+                "id": 6439,
+                "name": "OtherError0xB6",
+                "nameLocation": "8545:14:39",
+                "nodeType": "EnumValue",
+                "src": "8545:14:39"
+              },
+              {
+                "id": 6440,
+                "name": "OtherError0xB7",
+                "nameLocation": "8569:14:39",
+                "nodeType": "EnumValue",
+                "src": "8569:14:39"
+              },
+              {
+                "id": 6441,
+                "name": "OtherError0xB8",
+                "nameLocation": "8593:14:39",
+                "nodeType": "EnumValue",
+                "src": "8593:14:39"
+              },
+              {
+                "id": 6442,
+                "name": "OtherError0xB9",
+                "nameLocation": "8617:14:39",
+                "nodeType": "EnumValue",
+                "src": "8617:14:39"
+              },
+              {
+                "id": 6443,
+                "name": "OtherError0xBA",
+                "nameLocation": "8641:14:39",
+                "nodeType": "EnumValue",
+                "src": "8641:14:39"
+              },
+              {
+                "id": 6444,
+                "name": "OtherError0xBB",
+                "nameLocation": "8665:14:39",
+                "nodeType": "EnumValue",
+                "src": "8665:14:39"
+              },
+              {
+                "id": 6445,
+                "name": "OtherError0xBC",
+                "nameLocation": "8689:14:39",
+                "nodeType": "EnumValue",
+                "src": "8689:14:39"
+              },
+              {
+                "id": 6446,
+                "name": "OtherError0xBD",
+                "nameLocation": "8713:14:39",
+                "nodeType": "EnumValue",
+                "src": "8713:14:39"
+              },
+              {
+                "id": 6447,
+                "name": "OtherError0xBE",
+                "nameLocation": "8737:14:39",
+                "nodeType": "EnumValue",
+                "src": "8737:14:39"
+              },
+              {
+                "id": 6448,
+                "name": "OtherError0xBF",
+                "nameLocation": "8761:14:39",
+                "nodeType": "EnumValue",
+                "src": "8761:14:39"
+              },
+              {
+                "id": 6449,
+                "name": "OtherError0xC0",
+                "nameLocation": "8785:14:39",
+                "nodeType": "EnumValue",
+                "src": "8785:14:39"
+              },
+              {
+                "id": 6450,
+                "name": "OtherError0xC1",
+                "nameLocation": "8809:14:39",
+                "nodeType": "EnumValue",
+                "src": "8809:14:39"
+              },
+              {
+                "id": 6451,
+                "name": "OtherError0xC2",
+                "nameLocation": "8833:14:39",
+                "nodeType": "EnumValue",
+                "src": "8833:14:39"
+              },
+              {
+                "id": 6452,
+                "name": "OtherError0xC3",
+                "nameLocation": "8857:14:39",
+                "nodeType": "EnumValue",
+                "src": "8857:14:39"
+              },
+              {
+                "id": 6453,
+                "name": "OtherError0xC4",
+                "nameLocation": "8881:14:39",
+                "nodeType": "EnumValue",
+                "src": "8881:14:39"
+              },
+              {
+                "id": 6454,
+                "name": "OtherError0xC5",
+                "nameLocation": "8905:14:39",
+                "nodeType": "EnumValue",
+                "src": "8905:14:39"
+              },
+              {
+                "id": 6455,
+                "name": "OtherError0xC6",
+                "nameLocation": "8929:14:39",
+                "nodeType": "EnumValue",
+                "src": "8929:14:39"
+              },
+              {
+                "id": 6456,
+                "name": "OtherError0xC7",
+                "nameLocation": "8953:14:39",
+                "nodeType": "EnumValue",
+                "src": "8953:14:39"
+              },
+              {
+                "id": 6457,
+                "name": "OtherError0xC8",
+                "nameLocation": "8977:14:39",
+                "nodeType": "EnumValue",
+                "src": "8977:14:39"
+              },
+              {
+                "id": 6458,
+                "name": "OtherError0xC9",
+                "nameLocation": "9001:14:39",
+                "nodeType": "EnumValue",
+                "src": "9001:14:39"
+              },
+              {
+                "id": 6459,
+                "name": "OtherError0xCA",
+                "nameLocation": "9025:14:39",
+                "nodeType": "EnumValue",
+                "src": "9025:14:39"
+              },
+              {
+                "id": 6460,
+                "name": "OtherError0xCB",
+                "nameLocation": "9049:14:39",
+                "nodeType": "EnumValue",
+                "src": "9049:14:39"
+              },
+              {
+                "id": 6461,
+                "name": "OtherError0xCC",
+                "nameLocation": "9073:14:39",
+                "nodeType": "EnumValue",
+                "src": "9073:14:39"
+              },
+              {
+                "id": 6462,
+                "name": "OtherError0xCD",
+                "nameLocation": "9097:14:39",
+                "nodeType": "EnumValue",
+                "src": "9097:14:39"
+              },
+              {
+                "id": 6463,
+                "name": "OtherError0xCE",
+                "nameLocation": "9121:14:39",
+                "nodeType": "EnumValue",
+                "src": "9121:14:39"
+              },
+              {
+                "id": 6464,
+                "name": "OtherError0xCF",
+                "nameLocation": "9145:14:39",
+                "nodeType": "EnumValue",
+                "src": "9145:14:39"
+              },
+              {
+                "id": 6465,
+                "name": "OtherError0xD0",
+                "nameLocation": "9169:14:39",
+                "nodeType": "EnumValue",
+                "src": "9169:14:39"
+              },
+              {
+                "id": 6466,
+                "name": "OtherError0xD1",
+                "nameLocation": "9193:14:39",
+                "nodeType": "EnumValue",
+                "src": "9193:14:39"
+              },
+              {
+                "id": 6467,
+                "name": "OtherError0xD2",
+                "nameLocation": "9217:14:39",
+                "nodeType": "EnumValue",
+                "src": "9217:14:39"
+              },
+              {
+                "id": 6468,
+                "name": "OtherError0xD3",
+                "nameLocation": "9241:14:39",
+                "nodeType": "EnumValue",
+                "src": "9241:14:39"
+              },
+              {
+                "id": 6469,
+                "name": "OtherError0xD4",
+                "nameLocation": "9265:14:39",
+                "nodeType": "EnumValue",
+                "src": "9265:14:39"
+              },
+              {
+                "id": 6470,
+                "name": "OtherError0xD5",
+                "nameLocation": "9289:14:39",
+                "nodeType": "EnumValue",
+                "src": "9289:14:39"
+              },
+              {
+                "id": 6471,
+                "name": "OtherError0xD6",
+                "nameLocation": "9313:14:39",
+                "nodeType": "EnumValue",
+                "src": "9313:14:39"
+              },
+              {
+                "id": 6472,
+                "name": "OtherError0xD7",
+                "nameLocation": "9337:14:39",
+                "nodeType": "EnumValue",
+                "src": "9337:14:39"
+              },
+              {
+                "id": 6473,
+                "name": "OtherError0xD8",
+                "nameLocation": "9361:14:39",
+                "nodeType": "EnumValue",
+                "src": "9361:14:39"
+              },
+              {
+                "id": 6474,
+                "name": "OtherError0xD9",
+                "nameLocation": "9385:14:39",
+                "nodeType": "EnumValue",
+                "src": "9385:14:39"
+              },
+              {
+                "id": 6475,
+                "name": "OtherError0xDA",
+                "nameLocation": "9409:14:39",
+                "nodeType": "EnumValue",
+                "src": "9409:14:39"
+              },
+              {
+                "id": 6476,
+                "name": "OtherError0xDB",
+                "nameLocation": "9433:14:39",
+                "nodeType": "EnumValue",
+                "src": "9433:14:39"
+              },
+              {
+                "id": 6477,
+                "name": "OtherError0xDC",
+                "nameLocation": "9457:14:39",
+                "nodeType": "EnumValue",
+                "src": "9457:14:39"
+              },
+              {
+                "id": 6478,
+                "name": "OtherError0xDD",
+                "nameLocation": "9481:14:39",
+                "nodeType": "EnumValue",
+                "src": "9481:14:39"
+              },
+              {
+                "id": 6479,
+                "name": "OtherError0xDE",
+                "nameLocation": "9505:14:39",
+                "nodeType": "EnumValue",
+                "src": "9505:14:39"
+              },
+              {
+                "id": 6480,
+                "name": "OtherError0xDF",
+                "nameLocation": "9529:14:39",
+                "nodeType": "EnumValue",
+                "src": "9529:14:39"
+              },
+              {
+                "id": 6481,
+                "name": "BridgeMalformedRequest",
+                "nameLocation": "9911:22:39",
+                "nodeType": "EnumValue",
+                "src": "9911:22:39"
+              },
+              {
+                "id": 6482,
+                "name": "BridgePoorIncentives",
+                "nameLocation": "9983:20:39",
+                "nodeType": "EnumValue",
+                "src": "9983:20:39"
+              },
+              {
+                "id": 6483,
+                "name": "BridgeOversizedResult",
+                "nameLocation": "10229:21:39",
+                "nodeType": "EnumValue",
+                "src": "10229:21:39"
+              },
+              {
+                "id": 6484,
+                "name": "OtherError0xE3",
+                "nameLocation": "10284:14:39",
+                "nodeType": "EnumValue",
+                "src": "10284:14:39"
+              },
+              {
+                "id": 6485,
+                "name": "OtherError0xE4",
+                "nameLocation": "10308:14:39",
+                "nodeType": "EnumValue",
+                "src": "10308:14:39"
+              },
+              {
+                "id": 6486,
+                "name": "OtherError0xE5",
+                "nameLocation": "10332:14:39",
+                "nodeType": "EnumValue",
+                "src": "10332:14:39"
+              },
+              {
+                "id": 6487,
+                "name": "OtherError0xE6",
+                "nameLocation": "10356:14:39",
+                "nodeType": "EnumValue",
+                "src": "10356:14:39"
+              },
+              {
+                "id": 6488,
+                "name": "OtherError0xE7",
+                "nameLocation": "10380:14:39",
+                "nodeType": "EnumValue",
+                "src": "10380:14:39"
+              },
+              {
+                "id": 6489,
+                "name": "OtherError0xE8",
+                "nameLocation": "10404:14:39",
+                "nodeType": "EnumValue",
+                "src": "10404:14:39"
+              },
+              {
+                "id": 6490,
+                "name": "OtherError0xE9",
+                "nameLocation": "10428:14:39",
+                "nodeType": "EnumValue",
+                "src": "10428:14:39"
+              },
+              {
+                "id": 6491,
+                "name": "OtherError0xEA",
+                "nameLocation": "10452:14:39",
+                "nodeType": "EnumValue",
+                "src": "10452:14:39"
+              },
+              {
+                "id": 6492,
+                "name": "OtherError0xEB",
+                "nameLocation": "10476:14:39",
+                "nodeType": "EnumValue",
+                "src": "10476:14:39"
+              },
+              {
+                "id": 6493,
+                "name": "OtherError0xEC",
+                "nameLocation": "10500:14:39",
+                "nodeType": "EnumValue",
+                "src": "10500:14:39"
+              },
+              {
+                "id": 6494,
+                "name": "OtherError0xED",
+                "nameLocation": "10524:14:39",
+                "nodeType": "EnumValue",
+                "src": "10524:14:39"
+              },
+              {
+                "id": 6495,
+                "name": "OtherError0xEE",
+                "nameLocation": "10548:14:39",
+                "nodeType": "EnumValue",
+                "src": "10548:14:39"
+              },
+              {
+                "id": 6496,
+                "name": "OtherError0xEF",
+                "nameLocation": "10572:14:39",
+                "nodeType": "EnumValue",
+                "src": "10572:14:39"
+              },
+              {
+                "id": 6497,
+                "name": "OtherError0xF0",
+                "nameLocation": "10596:14:39",
+                "nodeType": "EnumValue",
+                "src": "10596:14:39"
+              },
+              {
+                "id": 6498,
+                "name": "OtherError0xF1",
+                "nameLocation": "10620:14:39",
+                "nodeType": "EnumValue",
+                "src": "10620:14:39"
+              },
+              {
+                "id": 6499,
+                "name": "OtherError0xF2",
+                "nameLocation": "10644:14:39",
+                "nodeType": "EnumValue",
+                "src": "10644:14:39"
+              },
+              {
+                "id": 6500,
+                "name": "OtherError0xF3",
+                "nameLocation": "10668:14:39",
+                "nodeType": "EnumValue",
+                "src": "10668:14:39"
+              },
+              {
+                "id": 6501,
+                "name": "OtherError0xF4",
+                "nameLocation": "10692:14:39",
+                "nodeType": "EnumValue",
+                "src": "10692:14:39"
+              },
+              {
+                "id": 6502,
+                "name": "OtherError0xF5",
+                "nameLocation": "10716:14:39",
+                "nodeType": "EnumValue",
+                "src": "10716:14:39"
+              },
+              {
+                "id": 6503,
+                "name": "OtherError0xF6",
+                "nameLocation": "10740:14:39",
+                "nodeType": "EnumValue",
+                "src": "10740:14:39"
+              },
+              {
+                "id": 6504,
+                "name": "OtherError0xF7",
+                "nameLocation": "10764:14:39",
+                "nodeType": "EnumValue",
+                "src": "10764:14:39"
+              },
+              {
+                "id": 6505,
+                "name": "OtherError0xF8",
+                "nameLocation": "10788:14:39",
+                "nodeType": "EnumValue",
+                "src": "10788:14:39"
+              },
+              {
+                "id": 6506,
+                "name": "OtherError0xF9",
+                "nameLocation": "10812:14:39",
+                "nodeType": "EnumValue",
+                "src": "10812:14:39"
+              },
+              {
+                "id": 6507,
+                "name": "OtherError0xFA",
+                "nameLocation": "10836:14:39",
+                "nodeType": "EnumValue",
+                "src": "10836:14:39"
+              },
+              {
+                "id": 6508,
+                "name": "OtherError0xFB",
+                "nameLocation": "10860:14:39",
+                "nodeType": "EnumValue",
+                "src": "10860:14:39"
+              },
+              {
+                "id": 6509,
+                "name": "OtherError0xFC",
+                "nameLocation": "10884:14:39",
+                "nodeType": "EnumValue",
+                "src": "10884:14:39"
+              },
+              {
+                "id": 6510,
+                "name": "OtherError0xFD",
+                "nameLocation": "10908:14:39",
+                "nodeType": "EnumValue",
+                "src": "10908:14:39"
+              },
+              {
+                "id": 6511,
+                "name": "OtherError0xFE",
+                "nameLocation": "10932:14:39",
+                "nodeType": "EnumValue",
+                "src": "10932:14:39"
+              },
+              {
+                "id": 6512,
+                "name": "UnhandledIntercept",
+                "nameLocation": "11055:18:39",
+                "nodeType": "EnumValue",
+                "src": "11055:18:39"
+              }
+            ],
+            "name": "ErrorCodes",
+            "nameLocation": "2576:10:39",
+            "nodeType": "EnumDefinition",
+            "src": "2571:8508:39"
+          }
+        ],
+        "scope": 6515,
+        "src": "144:10937:39",
+        "usedErrors": []
+      }
+    ],
+    "src": "33:11049:39"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.15+commit.e14f2714.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.8",
+  "updatedAt": "2022-08-11T14:10:46.163Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

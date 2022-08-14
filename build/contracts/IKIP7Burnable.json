@@ -1,0 +1,272 @@
+{
+  "contractName": "IKIP7Burnable",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "burn",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "burnFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.15+commit.e14f2714\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"burn\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"burnFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Buring extension of the KIP7 standard as defined in the KIP. See https://kips.klaytn.com/KIPs/kip-7#burning-extension\",\"kind\":\"dev\",\"methods\":{\"burn(uint256)\":{\"details\":\"Destroys `amount` tokens from the caller's account Emits a {Transfer} event with the 0x0 address as `to`.\"},\"burnFrom(address,uint256)\":{\"details\":\"Destroys `amount` tokens from `account` using the {IKIP7-allowance} mechanism. Emits a {Transfer} event with the 0x0 address as `to`.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"@klaytn/contracts/KIP/token/KIP7/extensions/IKIP7Burnable.sol\":\"IKIP7Burnable\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@klaytn/contracts/KIP/token/KIP7/extensions/IKIP7Burnable.sol\":{\"keccak256\":\"0xd84ce38e698e7f4aba60b0d1b7deaa7ff5e65e0bfae4f12aed401a2c81dcc78e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2de87196445b07572156f7a4da64b293a1c0ebaf51fb8c7e2d7c37270cbf3357\",\"dweb:/ipfs/QmVawGpnFtKh2MyGi1yjTwtbRuP4rvCHwPRbMpAvy8L81v\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\n// Klaytn Contract Library v1.0.0 (KIP/token/KIP7/extensions/IKIP7Burnable.sol)\n\npragma solidity ^0.8.0;\n\n/**\n * @dev Buring extension of the KIP7 standard as defined in the KIP.\n * See https://kips.klaytn.com/KIPs/kip-7#burning-extension\n */\ninterface IKIP7Burnable {\n    /**\n     * @dev Destroys `amount` tokens from the caller's account\n     *\n     * Emits a {Transfer} event with the 0x0 address as `to`.\n     */\n    function burn(uint256 amount) external;\n\n    /**\n     * @dev Destroys `amount` tokens from `account` using\n     * the {IKIP7-allowance} mechanism.\n     *\n     * Emits a {Transfer} event with the 0x0 address as `to`.\n     */\n    function burnFrom(address account, uint256 amount) external;\n}\n",
+  "sourcePath": "@klaytn\\contracts\\KIP\\token\\KIP7\\extensions\\IKIP7Burnable.sol",
+  "ast": {
+    "absolutePath": "@klaytn/contracts/KIP/token/KIP7/extensions/IKIP7Burnable.sol",
+    "exportedSymbols": {
+      "IKIP7Burnable": [
+        2902
+      ]
+    },
+    "id": 2903,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 2886,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "113:23:16"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "IKIP7Burnable",
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": {
+          "id": 2887,
+          "nodeType": "StructuredDocumentation",
+          "src": "138:136:16",
+          "text": " @dev Buring extension of the KIP7 standard as defined in the KIP.\n See https://kips.klaytn.com/KIPs/kip-7#burning-extension"
+        },
+        "fullyImplemented": false,
+        "id": 2902,
+        "linearizedBaseContracts": [
+          2902
+        ],
+        "name": "IKIP7Burnable",
+        "nameLocation": "285:13:16",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "documentation": {
+              "id": 2888,
+              "nodeType": "StructuredDocumentation",
+              "src": "305:143:16",
+              "text": " @dev Destroys `amount` tokens from the caller's account\n Emits a {Transfer} event with the 0x0 address as `to`."
+            },
+            "functionSelector": "42966c68",
+            "id": 2893,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "burn",
+            "nameLocation": "462:4:16",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2891,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2890,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "475:6:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2893,
+                  "src": "467:14:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2889,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "467:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "466:16:16"
+            },
+            "returnParameters": {
+              "id": 2892,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "491:0:16"
+            },
+            "scope": 2902,
+            "src": "453:39:16",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "documentation": {
+              "id": 2894,
+              "nodeType": "StructuredDocumentation",
+              "src": "498:178:16",
+              "text": " @dev Destroys `amount` tokens from `account` using\n the {IKIP7-allowance} mechanism.\n Emits a {Transfer} event with the 0x0 address as `to`."
+            },
+            "functionSelector": "79cc6790",
+            "id": 2901,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "burnFrom",
+            "nameLocation": "690:8:16",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 2899,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 2896,
+                  "mutability": "mutable",
+                  "name": "account",
+                  "nameLocation": "707:7:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2901,
+                  "src": "699:15:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 2895,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "699:7:16",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 2898,
+                  "mutability": "mutable",
+                  "name": "amount",
+                  "nameLocation": "724:6:16",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 2901,
+                  "src": "716:14:16",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 2897,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "716:7:16",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "698:33:16"
+            },
+            "returnParameters": {
+              "id": 2900,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "740:0:16"
+            },
+            "scope": 2902,
+            "src": "681:60:16",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 2903,
+        "src": "275:468:16",
+        "usedErrors": []
+      }
+    ],
+    "src": "113:631:16"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.15+commit.e14f2714.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.8",
+  "updatedAt": "2022-08-11T14:10:46.082Z",
+  "devdoc": {
+    "details": "Buring extension of the KIP7 standard as defined in the KIP. See https://kips.klaytn.com/KIPs/kip-7#burning-extension",
+    "kind": "dev",
+    "methods": {
+      "burn(uint256)": {
+        "details": "Destroys `amount` tokens from the caller's account Emits a {Transfer} event with the 0x0 address as `to`."
+      },
+      "burnFrom(address,uint256)": {
+        "details": "Destroys `amount` tokens from `account` using the {IKIP7-allowance} mechanism. Emits a {Transfer} event with the 0x0 address as `to`."
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

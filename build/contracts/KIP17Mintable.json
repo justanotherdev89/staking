@@ -1,0 +1,2116 @@
+{
+  "contractName": "KIP17Mintable",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "approved",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "Approval",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "ApprovalForAll",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "previousAdminRole",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "newAdminRole",
+          "type": "bytes32"
+        }
+      ],
+      "name": "RoleAdminChanged",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "RoleGranted",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        }
+      ],
+      "name": "RoleRevoked",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "Transfer",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "DEFAULT_ADMIN_ROLE",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "MINTER_ROLE",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "approve",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "balanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getApproved",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getRoleAdmin",
+      "outputs": [
+        {
+          "internalType": "bytes32",
+          "name": "",
+          "type": "bytes32"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "uint256",
+          "name": "index",
+          "type": "uint256"
+        }
+      ],
+      "name": "getRoleMember",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        }
+      ],
+      "name": "getRoleMemberCount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "grantRole",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "hasRole",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        }
+      ],
+      "name": "isApprovedForAll",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "name",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "ownerOf",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "renounceRole",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "role",
+          "type": "bytes32"
+        },
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "revokeRole",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "internalType": "bytes",
+          "name": "_data",
+          "type": "bytes"
+        }
+      ],
+      "name": "safeTransferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "operator",
+          "type": "address"
+        },
+        {
+          "internalType": "bool",
+          "name": "approved",
+          "type": "bool"
+        }
+      ],
+      "name": "setApprovalForAll",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "symbol",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "tokenURI",
+      "outputs": [
+        {
+          "internalType": "string",
+          "name": "",
+          "type": "string"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "transferFrom",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes4",
+          "name": "interfaceId",
+          "type": "bytes4"
+        }
+      ],
+      "name": "supportsInterface",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "mint",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "isMinter",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "addMinter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceMinter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.15+commit.e14f2714\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"approved\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Approval\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"name\":\"ApprovalForAll\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"previousAdminRole\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"newAdminRole\",\"type\":\"bytes32\"}],\"name\":\"RoleAdminChanged\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleGranted\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"}],\"name\":\"RoleRevoked\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"Transfer\",\"type\":\"event\"},{\"inputs\":[],\"name\":\"DEFAULT_ADMIN_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"MINTER_ROLE\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"addMinter\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"approve\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"}],\"name\":\"balanceOf\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"getApproved\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleAdmin\",\"outputs\":[{\"internalType\":\"bytes32\",\"name\":\"\",\"type\":\"bytes32\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"getRoleMember\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"}],\"name\":\"getRoleMemberCount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"grantRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"hasRole\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"}],\"name\":\"isApprovedForAll\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"isMinter\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"mint\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"name\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"ownerOf\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"renounceMinter\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"renounceRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes32\",\"name\":\"role\",\"type\":\"bytes32\"},{\"internalType\":\"address\",\"name\":\"account\",\"type\":\"address\"}],\"name\":\"revokeRole\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"internalType\":\"bytes\",\"name\":\"_data\",\"type\":\"bytes\"}],\"name\":\"safeTransferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"operator\",\"type\":\"address\"},{\"internalType\":\"bool\",\"name\":\"approved\",\"type\":\"bool\"}],\"name\":\"setApprovalForAll\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"bytes4\",\"name\":\"interfaceId\",\"type\":\"bytes4\"}],\"name\":\"supportsInterface\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"symbol\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"tokenURI\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"from\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"to\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"}],\"name\":\"transferFrom\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"details\":\"Extension of KIP17 that supports permissioned token minting See https://kips.klaytn.com/KIPs/kip-17#minting-extension\",\"kind\":\"dev\",\"methods\":{\"addMinter(address)\":{\"details\":\"See {IKIP17Mintable-addMinter} Emits a {RoleGranted} event\"},\"approve(address,uint256)\":{\"details\":\"See {IKIP17-approve}.\"},\"balanceOf(address)\":{\"details\":\"See {IKIP17-balanceOf}.\"},\"getApproved(uint256)\":{\"details\":\"See {IKIP17-getApproved}.\"},\"getRoleAdmin(bytes32)\":{\"details\":\"Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}.\"},\"getRoleMember(bytes32,uint256)\":{\"details\":\"Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information.\"},\"getRoleMemberCount(bytes32)\":{\"details\":\"Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role.\"},\"grantRole(bytes32,address)\":{\"details\":\"Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleGranted} event.\"},\"hasRole(bytes32,address)\":{\"details\":\"Returns `true` if `account` has been granted `role`.\"},\"isApprovedForAll(address,address)\":{\"details\":\"See {IKIP17-isApprovedForAll}.\"},\"isMinter(address)\":{\"details\":\"See {IKIP17Mintable-isMinter}\"},\"mint(address,uint256)\":{\"details\":\"See {IKIP17Mintable-mint} IMPORTANT: this uses _safeMint internally, please be aware that if you do not want this safety functionality, replace with _mint Emits a {Transfer} event with 0X0 as the `from` account\"},\"name()\":{\"details\":\"See {IKIP17Metadata-name}.\"},\"ownerOf(uint256)\":{\"details\":\"See {IKIP17-ownerOf}.\"},\"renounceMinter()\":{\"details\":\"See {IKIP17Mintable-renounceMinter} Emits a {RoleRevoked} event\"},\"renounceRole(bytes32,address)\":{\"details\":\"Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been revoked `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`. May emit a {RoleRevoked} event.\"},\"revokeRole(bytes32,address)\":{\"details\":\"Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleRevoked} event.\"},\"safeTransferFrom(address,address,uint256)\":{\"details\":\"See {IKIP17-safeTransferFrom}.\"},\"safeTransferFrom(address,address,uint256,bytes)\":{\"details\":\"See {IKIP17-safeTransferFrom}.\"},\"setApprovalForAll(address,bool)\":{\"details\":\"See {IKIP17-setApprovalForAll}.\"},\"supportsInterface(bytes4)\":{\"details\":\"Returns true if `interfaceId` is implemented and false otherwise See {IKIP13} and {IERC165}.\"},\"symbol()\":{\"details\":\"See {IKIP17Metadata-symbol}.\"},\"tokenURI(uint256)\":{\"details\":\"See {IKIP17Metadata-tokenURI}.\"},\"transferFrom(address,address,uint256)\":{\"details\":\"See {IKIP17-transferFrom}.\"}},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"@klaytn/contracts/KIP/token/KIP17/extensions/KIP17Mintable.sol\":\"KIP17Mintable\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"@klaytn/contracts/KIP/interfaces/IKIP13.sol\":{\"keccak256\":\"0x538533dcc430536d456ae9e781680ca578ce70bab6b2db7cc18422d2babfd030\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2138a452ed0d0e65ec203a3b4cc610c065b8072efdd3d7757914c0597f1a08fb\",\"dweb:/ipfs/QmR5TvG2H5SwbLmDMnbUHfDxxHW6upYLdCbsZtibHVEvEr\"]},\"@klaytn/contracts/KIP/token/KIP17/IKIP17.sol\":{\"keccak256\":\"0x12805039249aec575fc0ab02485da91649f2740f35eed4c08572c095513cc0d3\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://13d039aa7e4cb6338b20b666e6d27301c8f1a0a2ba18f2cd116b5e4ad1268e4b\",\"dweb:/ipfs/QmXXoYQUpr37DJbgcZHp4TvRYMcBLUG7iMaToAWyfavhUx\"]},\"@klaytn/contracts/KIP/token/KIP17/IKIP17Receiver.sol\":{\"keccak256\":\"0x6cd2dc3fa3f2656adb92baddde366f99ec6c9db6e06a1e7d9be345050df2b15d\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d998f68debfb93aeb3e771fbb6c5e29e18ffa0c80eaa48fae1931dcb1869adbb\",\"dweb:/ipfs/QmekfbvEgcdstojWrYdN2WeK8vJQgjNVfX9hhquES4hbqn\"]},\"@klaytn/contracts/KIP/token/KIP17/KIP17.sol\":{\"keccak256\":\"0xf0d3d09792dc1927b44fd220c27823db8e994b3dfecd5cc504f59db66e2518ee\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c4500841321abe41ca4b97dc0905ca449c0f0aca201f9c8a88b7527eb78bbb47\",\"dweb:/ipfs/QmfRqMkt1uprh4souYWwNteVmGSsmhYthqPwk4zWwA3v6r\"]},\"@klaytn/contracts/KIP/token/KIP17/extensions/IKIP17Metadata.sol\":{\"keccak256\":\"0x9f063faf0b0f42da2557feaa370cf92996be09899c196dd0b99f99ac4242401e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8246c8d639b26c877e60478e8647bd4d4474be914012f2c00a50ab819fd1cf11\",\"dweb:/ipfs/QmRqZ9VP9YvbgTYavv6QHJquGHAjyHUhsvb26HD3m9Gx5C\"]},\"@klaytn/contracts/KIP/token/KIP17/extensions/IKIP17Mintable.sol\":{\"keccak256\":\"0x67a8ffaa6b4fa5bf13507dc65fbf476c42f06b38f2b626b92a0e61a2a73c6829\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://1321eafbc479b9ba3d8b7ff4bcc69f17adaedc293a7f60a5e0bdc68ce2af78aa\",\"dweb:/ipfs/QmXdiiXBj3rm6m5JGGoRZh41EmLSMx6tzTsgg5JWdsAAhD\"]},\"@klaytn/contracts/KIP/token/KIP17/extensions/KIP17Mintable.sol\":{\"keccak256\":\"0xcdba78b8d82818c7ead04f3af17547ff06f9d17c307823a9c5108440a7294767\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://c2e96f91ee948a1a24fdd48605892a6879dd21b36077207fb385142a47edd6d2\",\"dweb:/ipfs/QmSCwvTujxpUshuKdCMeFzr1zVWaPtf4yZCuoA4pDa8dpH\"]},\"@klaytn/contracts/KIP/utils/introspection/IKIP13.sol\":{\"keccak256\":\"0xb63277576f18a3a05c2ec7736bbb7b4a0bd0d12bbd823a4751144d60273a2c46\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3d5b38071876acadb51cd31254f6eefa30d9240c21b531bdb89648f7475231fd\",\"dweb:/ipfs/QmVvkB9Uwwdq2QJp1uU6eJrcetmaU9zdcNvdg2z9zRmy9e\"]},\"@klaytn/contracts/KIP/utils/introspection/KIP13.sol\":{\"keccak256\":\"0x9efe61dd73941b281759ca65eaaa0338c9a4105ba8c5d5c5b4998438830c8ed9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://261ed10e8f4c3c6408f119e62b87acc63413ff3c848c4b415e2a596eda29aacf\",\"dweb:/ipfs/QmeaBqThx2gmgG4HrR6Uk6Xjcyx5kUs2SSRMK4nkUZRVX6\"]},\"@klaytn/contracts/access/AccessControl.sol\":{\"keccak256\":\"0x3320df3db66375139e51825d1e0055c6236a26ce0dee4afe9cbd2da09fcd66b3\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9c0a0c950f31cbfa7c2fb02f962c667ce12e4e1149a92bdc1df2ab547e405bd8\",\"dweb:/ipfs/QmdwL4PuCXoLes5vfmGFVSRFe44ZcE7v14tBr1x9XzNjyJ\"]},\"@klaytn/contracts/access/AccessControlEnumerable.sol\":{\"keccak256\":\"0x13f5e15f2a0650c0b6aaee2ef19e89eaf4870d6e79662d572a393334c1397247\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7ee05f28f549a5d6515e152580716b87636ed4bfab9812499a6e3803df88288b\",\"dweb:/ipfs/QmeEnhdwY1t5Y3YU5a4ffzgXuToydH2PNdNxV9W7dEPRQJ\"]},\"@klaytn/contracts/access/IAccessControl.sol\":{\"keccak256\":\"0x59ce320a585d7e1f163cd70390a0ef2ff9cec832e2aa544293a00692465a7a57\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://bb2c137c343ef0c4c7ce7b18c1d108afdc9d315a04e48307288d2d05adcbde3a\",\"dweb:/ipfs/QmUxhrAQM3MM3FF5j7AtcXLXguWCJBHJ14BRdVtuoQc8Fh\"]},\"@klaytn/contracts/access/IAccessControlEnumerable.sol\":{\"keccak256\":\"0xba4459ab871dfa300f5212c6c30178b63898c03533a1ede28436f11546626676\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://3dcc7b09bfa6e18aab262ca372f4a9b1fc82e294b430706a4e1378cf58e6a276\",\"dweb:/ipfs/QmT8oSAcesdctR15HMLhr2a1HRpXymxdjTfdtfTYJcj2N2\"]},\"@klaytn/contracts/token/ERC721/IERC721Receiver.sol\":{\"keccak256\":\"0xa82b58eca1ee256be466e536706850163d2ec7821945abd6b4778cfb3bee37da\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6e75cf83beb757b8855791088546b8337e9d4684e169400c20d44a515353b708\",\"dweb:/ipfs/QmYvPafLfoquiDMEj7CKHtvbgHu7TJNPSVPSCjrtjV8HjV\"]},\"@klaytn/contracts/utils/Address.sol\":{\"keccak256\":\"0x2ccf9d2313a313d41a791505f2b5abfdc62191b5d4334f7f7a82691c088a1c87\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b3a57d0854b2fdce6ebff933a48dca2445643d1eccfc27f00292e937f26c6a58\",\"dweb:/ipfs/QmW45rZooS9TqR4YXUbjRbtf2Bpb5ouSarBvfW1LdGprvV\"]},\"@klaytn/contracts/utils/Context.sol\":{\"keccak256\":\"0xe2e337e6dde9ef6b680e07338c493ebea1b5fd09b43424112868e9cc1706bca7\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6df0ddf21ce9f58271bdfaa85cde98b200ef242a05a3f85c2bc10a8294800a92\",\"dweb:/ipfs/QmRK2Y5Yc6BK7tGKkgsgn3aJEQGi5aakeSPZvS65PV8Xp3\"]},\"@klaytn/contracts/utils/Strings.sol\":{\"keccak256\":\"0xca92905e1626e8567483de21bc1208284865ed7be71d54ca320a140ac25fd290\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://53c8d5bc6af499853ddf86eb2a6d7448f18a78313a04b8652a83007d04954577\",\"dweb:/ipfs/QmQV6pF3FQoqR16kSK9FNg6bKfWLbcfHBTCKS7p2ERTkEF\"]},\"@klaytn/contracts/utils/introspection/ERC165.sol\":{\"keccak256\":\"0xd10975de010d89fd1c78dc5e8a9a7e7f496198085c151648f20cba166b32582b\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://fb0048dee081f6fffa5f74afc3fb328483c2a30504e94a0ddd2a5114d731ec4d\",\"dweb:/ipfs/QmZptt1nmYoA5SgjwnSgWqgUSDgm4q52Yos3xhnMv3MV43\"]},\"@klaytn/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x447a5f3ddc18419d41ff92b3773fb86471b1db25773e07f877f548918a185bf1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://be161e54f24e5c6fae81a12db1a8ae87bc5ae1b0ddc805d82a1440a68455088f\",\"dweb:/ipfs/QmP7C3CHdY9urF4dEMb9wmsp1wMxHF6nhA2yQE5SKiPAdy\"]},\"@klaytn/contracts/utils/structs/EnumerableSet.sol\":{\"keccak256\":\"0xc5555a5c747d959989ab5a47ac138eab46d68ec82cbd75dbdd5883081c6d0b63\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://8c5ce4b9dec2e481efd9db3c98bb39179bdd738715fca6606b4327d674939f26\",\"dweb:/ipfs/Qma4ecV5WP15c9nmwytZLYcnw5w6YBfKTVpWWF5USbJNbv\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\n// Klaytn Contract Library v1.0.0 (KIP/token/KIP17/extensions/KIP17Mintable.sol)\n\npragma solidity ^0.8.0;\n\nimport \"../KIP17.sol\";\nimport \"../../../../access/AccessControlEnumerable.sol\";\nimport \"./IKIP17Mintable.sol\";\n\n/**\n * @dev Extension of KIP17 that supports permissioned token minting\n * See https://kips.klaytn.com/KIPs/kip-17#minting-extension\n */\nabstract contract KIP17Mintable is KIP17, AccessControlEnumerable, IKIP17Mintable {\n    bytes32 public constant MINTER_ROLE = keccak256(\"KIP17_MINTER_ROLE\");\n\n    /**\n     * @dev Returns true if `interfaceId` is implemented and false otherwise\n     *\n     * See {IKIP13} and {IERC165}.\n     */\n    function supportsInterface(bytes4 interfaceId)\n        public\n        view\n        virtual\n        override(KIP17, AccessControlEnumerable)\n        returns (bool)\n    {\n        return\n            interfaceId == type(IKIP17Mintable).interfaceId ||\n            KIP17.supportsInterface(interfaceId) ||\n            AccessControlEnumerable.supportsInterface(interfaceId);\n    }\n\n    /**\n     * @dev See {IKIP17Mintable-mint}\n     *\n     * IMPORTANT: this uses _safeMint internally, please be aware that if you do not want this safety functionality, replace with _mint\n     *\n     * Emits a {Transfer} event with 0X0 as the `from` account\n     */\n    function mint(address to, uint256 tokenId) public virtual override onlyRole(MINTER_ROLE) returns (bool) {\n        _safeMint(to, tokenId);\n        return true;\n    }\n\n    /**\n     * @dev See {IKIP17Mintable-isMinter}\n     */\n    function isMinter(address account) public view returns (bool) {\n        return hasRole(MINTER_ROLE, account);\n    }\n\n    /**\n     * @dev See {IKIP17Mintable-addMinter}\n     *\n     * Emits a {RoleGranted} event\n     */\n    function addMinter(address account) public onlyRole(DEFAULT_ADMIN_ROLE) {\n        grantRole(MINTER_ROLE, account);\n    }\n\n    /**\n     * @dev See {IKIP17Mintable-renounceMinter}\n     *\n     * Emits a {RoleRevoked} event\n     */\n    function renounceMinter() public {\n        renounceRole(MINTER_ROLE, _msgSender());\n    }\n}\n",
+  "sourcePath": "@klaytn\\contracts\\KIP\\token\\KIP17\\extensions\\KIP17Mintable.sol",
+  "ast": {
+    "absolutePath": "@klaytn/contracts/KIP/token/KIP17/extensions/KIP17Mintable.sol",
+    "exportedSymbols": {
+      "AccessControl": [
+        3352
+      ],
+      "AccessControlEnumerable": [
+        3477
+      ],
+      "Address": [
+        4085
+      ],
+      "Context": [
+        4107
+      ],
+      "ERC165": [
+        4357
+      ],
+      "EnumerableSet": [
+        4968
+      ],
+      "IAccessControl": [
+        3550
+      ],
+      "IAccessControlEnumerable": [
+        3575
+      ],
+      "IERC165": [
+        4369
+      ],
+      "IERC721Receiver": [
+        3790
+      ],
+      "IKIP13": [
+        3008
+      ],
+      "IKIP17": [
+        118
+      ],
+      "IKIP17Metadata": [
+        1145
+      ],
+      "IKIP17Mintable": [
+        1177
+      ],
+      "IKIP17Receiver": [
+        136
+      ],
+      "KIP13": [
+        3032
+      ],
+      "KIP17": [
+        1077
+      ],
+      "KIP17Mintable": [
+        1715
+      ],
+      "Strings": [
+        4333
+      ]
+    },
+    "id": 1716,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1608,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "114:23:11"
+      },
+      {
+        "absolutePath": "@klaytn/contracts/KIP/token/KIP17/KIP17.sol",
+        "file": "../KIP17.sol",
+        "id": 1609,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 1716,
+        "sourceUnit": 1078,
+        "src": "139:22:11",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@klaytn/contracts/access/AccessControlEnumerable.sol",
+        "file": "../../../../access/AccessControlEnumerable.sol",
+        "id": 1610,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 1716,
+        "sourceUnit": 3478,
+        "src": "162:56:11",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@klaytn/contracts/KIP/token/KIP17/extensions/IKIP17Mintable.sol",
+        "file": "./IKIP17Mintable.sol",
+        "id": 1611,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 1716,
+        "sourceUnit": 1178,
+        "src": "219:30:11",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": true,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 1613,
+              "name": "KIP17",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 1077,
+              "src": "423:5:11"
+            },
+            "id": 1614,
+            "nodeType": "InheritanceSpecifier",
+            "src": "423:5:11"
+          },
+          {
+            "baseName": {
+              "id": 1615,
+              "name": "AccessControlEnumerable",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 3477,
+              "src": "430:23:11"
+            },
+            "id": 1616,
+            "nodeType": "InheritanceSpecifier",
+            "src": "430:23:11"
+          },
+          {
+            "baseName": {
+              "id": 1617,
+              "name": "IKIP17Mintable",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 1177,
+              "src": "455:14:11"
+            },
+            "id": 1618,
+            "nodeType": "InheritanceSpecifier",
+            "src": "455:14:11"
+          }
+        ],
+        "canonicalName": "KIP17Mintable",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 1612,
+          "nodeType": "StructuredDocumentation",
+          "src": "251:136:11",
+          "text": " @dev Extension of KIP17 that supports permissioned token minting\n See https://kips.klaytn.com/KIPs/kip-17#minting-extension"
+        },
+        "fullyImplemented": false,
+        "id": 1715,
+        "linearizedBaseContracts": [
+          1715,
+          1177,
+          3477,
+          3352,
+          4357,
+          4369,
+          3575,
+          3550,
+          1077,
+          1145,
+          118,
+          3032,
+          3008,
+          4107
+        ],
+        "name": "KIP17Mintable",
+        "nameLocation": "406:13:11",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "constant": true,
+            "functionSelector": "d5391393",
+            "id": 1623,
+            "mutability": "constant",
+            "name": "MINTER_ROLE",
+            "nameLocation": "500:11:11",
+            "nodeType": "VariableDeclaration",
+            "scope": 1715,
+            "src": "476:68:11",
+            "stateVariable": true,
+            "storageLocation": "default",
+            "typeDescriptions": {
+              "typeIdentifier": "t_bytes32",
+              "typeString": "bytes32"
+            },
+            "typeName": {
+              "id": 1619,
+              "name": "bytes32",
+              "nodeType": "ElementaryTypeName",
+              "src": "476:7:11",
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes32",
+                "typeString": "bytes32"
+              }
+            },
+            "value": {
+              "arguments": [
+                {
+                  "hexValue": "4b495031375f4d494e5445525f524f4c45",
+                  "id": 1621,
+                  "isConstant": false,
+                  "isLValue": false,
+                  "isPure": true,
+                  "kind": "string",
+                  "lValueRequested": false,
+                  "nodeType": "Literal",
+                  "src": "524:19:11",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_stringliteral_879d41736c42986c020ca99e1e88db6c24a0b4923eb26f2115159827a9ccb72e",
+                    "typeString": "literal_string \"KIP17_MINTER_ROLE\""
+                  },
+                  "value": "KIP17_MINTER_ROLE"
+                }
+              ],
+              "expression": {
+                "argumentTypes": [
+                  {
+                    "typeIdentifier": "t_stringliteral_879d41736c42986c020ca99e1e88db6c24a0b4923eb26f2115159827a9ccb72e",
+                    "typeString": "literal_string \"KIP17_MINTER_ROLE\""
+                  }
+                ],
+                "id": 1620,
+                "name": "keccak256",
+                "nodeType": "Identifier",
+                "overloadedDeclarations": [],
+                "referencedDeclaration": 4294967288,
+                "src": "514:9:11",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_function_keccak256_pure$_t_bytes_memory_ptr_$returns$_t_bytes32_$",
+                  "typeString": "function (bytes memory) pure returns (bytes32)"
+                }
+              },
+              "id": 1622,
+              "isConstant": false,
+              "isLValue": false,
+              "isPure": true,
+              "kind": "functionCall",
+              "lValueRequested": false,
+              "names": [],
+              "nodeType": "FunctionCall",
+              "src": "514:30:11",
+              "tryCall": false,
+              "typeDescriptions": {
+                "typeIdentifier": "t_bytes32",
+                "typeString": "bytes32"
+              }
+            },
+            "visibility": "public"
+          },
+          {
+            "baseFunctions": [
+              230,
+              3393
+            ],
+            "body": {
+              "id": 1651,
+              "nodeType": "Block",
+              "src": "853:205:11",
+              "statements": [
+                {
+                  "expression": {
+                    "commonType": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    },
+                    "id": 1649,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "lValueRequested": false,
+                    "leftExpression": {
+                      "commonType": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      },
+                      "id": 1644,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "lValueRequested": false,
+                      "leftExpression": {
+                        "commonType": {
+                          "typeIdentifier": "t_bytes4",
+                          "typeString": "bytes4"
+                        },
+                        "id": 1639,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "leftExpression": {
+                          "id": 1634,
+                          "name": "interfaceId",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 1626,
+                          "src": "882:11:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes4",
+                            "typeString": "bytes4"
+                          }
+                        },
+                        "nodeType": "BinaryOperation",
+                        "operator": "==",
+                        "rightExpression": {
+                          "expression": {
+                            "arguments": [
+                              {
+                                "id": 1636,
+                                "name": "IKIP17Mintable",
+                                "nodeType": "Identifier",
+                                "overloadedDeclarations": [],
+                                "referencedDeclaration": 1177,
+                                "src": "902:14:11",
+                                "typeDescriptions": {
+                                  "typeIdentifier": "t_type$_t_contract$_IKIP17Mintable_$1177_$",
+                                  "typeString": "type(contract IKIP17Mintable)"
+                                }
+                              }
+                            ],
+                            "expression": {
+                              "argumentTypes": [
+                                {
+                                  "typeIdentifier": "t_type$_t_contract$_IKIP17Mintable_$1177_$",
+                                  "typeString": "type(contract IKIP17Mintable)"
+                                }
+                              ],
+                              "id": 1635,
+                              "name": "type",
+                              "nodeType": "Identifier",
+                              "overloadedDeclarations": [],
+                              "referencedDeclaration": 4294967269,
+                              "src": "897:4:11",
+                              "typeDescriptions": {
+                                "typeIdentifier": "t_function_metatype_pure$__$returns$__$",
+                                "typeString": "function () pure"
+                              }
+                            },
+                            "id": 1637,
+                            "isConstant": false,
+                            "isLValue": false,
+                            "isPure": true,
+                            "kind": "functionCall",
+                            "lValueRequested": false,
+                            "names": [],
+                            "nodeType": "FunctionCall",
+                            "src": "897:20:11",
+                            "tryCall": false,
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_magic_meta_type_t_contract$_IKIP17Mintable_$1177",
+                              "typeString": "type(contract IKIP17Mintable)"
+                            }
+                          },
+                          "id": 1638,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": true,
+                          "lValueRequested": false,
+                          "memberName": "interfaceId",
+                          "nodeType": "MemberAccess",
+                          "src": "897:32:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes4",
+                            "typeString": "bytes4"
+                          }
+                        },
+                        "src": "882:47:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      "nodeType": "BinaryOperation",
+                      "operator": "||",
+                      "rightExpression": {
+                        "arguments": [
+                          {
+                            "id": 1642,
+                            "name": "interfaceId",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 1626,
+                            "src": "969:11:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_bytes4",
+                              "typeString": "bytes4"
+                            }
+                          }
+                        ],
+                        "expression": {
+                          "argumentTypes": [
+                            {
+                              "typeIdentifier": "t_bytes4",
+                              "typeString": "bytes4"
+                            }
+                          ],
+                          "expression": {
+                            "id": 1640,
+                            "name": "KIP17",
+                            "nodeType": "Identifier",
+                            "overloadedDeclarations": [],
+                            "referencedDeclaration": 1077,
+                            "src": "945:5:11",
+                            "typeDescriptions": {
+                              "typeIdentifier": "t_type$_t_contract$_KIP17_$1077_$",
+                              "typeString": "type(contract KIP17)"
+                            }
+                          },
+                          "id": 1641,
+                          "isConstant": false,
+                          "isLValue": false,
+                          "isPure": false,
+                          "lValueRequested": false,
+                          "memberName": "supportsInterface",
+                          "nodeType": "MemberAccess",
+                          "referencedDeclaration": 230,
+                          "src": "945:23:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_function_internal_view$_t_bytes4_$returns$_t_bool_$",
+                            "typeString": "function (bytes4) view returns (bool)"
+                          }
+                        },
+                        "id": 1643,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "kind": "functionCall",
+                        "lValueRequested": false,
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "945:36:11",
+                        "tryCall": false,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bool",
+                          "typeString": "bool"
+                        }
+                      },
+                      "src": "882:99:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      }
+                    },
+                    "nodeType": "BinaryOperation",
+                    "operator": "||",
+                    "rightExpression": {
+                      "arguments": [
+                        {
+                          "id": 1647,
+                          "name": "interfaceId",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 1626,
+                          "src": "1039:11:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_bytes4",
+                            "typeString": "bytes4"
+                          }
+                        }
+                      ],
+                      "expression": {
+                        "argumentTypes": [
+                          {
+                            "typeIdentifier": "t_bytes4",
+                            "typeString": "bytes4"
+                          }
+                        ],
+                        "expression": {
+                          "id": 1645,
+                          "name": "AccessControlEnumerable",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 3477,
+                          "src": "997:23:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_type$_t_contract$_AccessControlEnumerable_$3477_$",
+                            "typeString": "type(contract AccessControlEnumerable)"
+                          }
+                        },
+                        "id": 1646,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "lValueRequested": false,
+                        "memberName": "supportsInterface",
+                        "nodeType": "MemberAccess",
+                        "referencedDeclaration": 3393,
+                        "src": "997:41:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_function_internal_view$_t_bytes4_$returns$_t_bool_$",
+                          "typeString": "function (bytes4) view returns (bool)"
+                        }
+                      },
+                      "id": 1648,
+                      "isConstant": false,
+                      "isLValue": false,
+                      "isPure": false,
+                      "kind": "functionCall",
+                      "lValueRequested": false,
+                      "names": [],
+                      "nodeType": "FunctionCall",
+                      "src": "997:54:11",
+                      "tryCall": false,
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_bool",
+                        "typeString": "bool"
+                      }
+                    },
+                    "src": "882:169:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 1633,
+                  "id": 1650,
+                  "nodeType": "Return",
+                  "src": "863:188:11"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 1624,
+              "nodeType": "StructuredDocumentation",
+              "src": "551:130:11",
+              "text": " @dev Returns true if `interfaceId` is implemented and false otherwise\n See {IKIP13} and {IERC165}."
+            },
+            "functionSelector": "01ffc9a7",
+            "id": 1652,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "supportsInterface",
+            "nameLocation": "695:17:11",
+            "nodeType": "FunctionDefinition",
+            "overrides": {
+              "id": 1630,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [
+                {
+                  "id": 1628,
+                  "name": "KIP17",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 1077,
+                  "src": "794:5:11"
+                },
+                {
+                  "id": 1629,
+                  "name": "AccessControlEnumerable",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 3477,
+                  "src": "801:23:11"
+                }
+              ],
+              "src": "785:40:11"
+            },
+            "parameters": {
+              "id": 1627,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1626,
+                  "mutability": "mutable",
+                  "name": "interfaceId",
+                  "nameLocation": "720:11:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1652,
+                  "src": "713:18:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bytes4",
+                    "typeString": "bytes4"
+                  },
+                  "typeName": {
+                    "id": 1625,
+                    "name": "bytes4",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "713:6:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes4",
+                      "typeString": "bytes4"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "712:20:11"
+            },
+            "returnParameters": {
+              "id": 1633,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1632,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1652,
+                  "src": "843:4:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 1631,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "843:4:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "842:6:11"
+            },
+            "scope": 1715,
+            "src": "686:372:11",
+            "stateMutability": "view",
+            "virtual": true,
+            "visibility": "public"
+          },
+          {
+            "baseFunctions": [
+              1158
+            ],
+            "body": {
+              "id": 1673,
+              "nodeType": "Block",
+              "src": "1435:60:11",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "id": 1667,
+                        "name": "to",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 1655,
+                        "src": "1455:2:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      },
+                      {
+                        "id": 1668,
+                        "name": "tokenId",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 1657,
+                        "src": "1459:7:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        },
+                        {
+                          "typeIdentifier": "t_uint256",
+                          "typeString": "uint256"
+                        }
+                      ],
+                      "id": 1666,
+                      "name": "_safeMint",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [
+                        638,
+                        677
+                      ],
+                      "referencedDeclaration": 638,
+                      "src": "1445:9:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_uint256_$returns$__$",
+                        "typeString": "function (address,uint256)"
+                      }
+                    },
+                    "id": 1669,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1445:22:11",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 1670,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1445:22:11"
+                },
+                {
+                  "expression": {
+                    "hexValue": "74727565",
+                    "id": 1671,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": true,
+                    "kind": "bool",
+                    "lValueRequested": false,
+                    "nodeType": "Literal",
+                    "src": "1484:4:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    },
+                    "value": "true"
+                  },
+                  "functionReturnParameters": 1665,
+                  "id": 1672,
+                  "nodeType": "Return",
+                  "src": "1477:11:11"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 1653,
+              "nodeType": "StructuredDocumentation",
+              "src": "1064:262:11",
+              "text": " @dev See {IKIP17Mintable-mint}\n IMPORTANT: this uses _safeMint internally, please be aware that if you do not want this safety functionality, replace with _mint\n Emits a {Transfer} event with 0X0 as the `from` account"
+            },
+            "functionSelector": "40c10f19",
+            "id": 1674,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "id": 1661,
+                    "name": "MINTER_ROLE",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 1623,
+                    "src": "1407:11:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  }
+                ],
+                "id": 1662,
+                "kind": "modifierInvocation",
+                "modifierName": {
+                  "id": 1660,
+                  "name": "onlyRole",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 3071,
+                  "src": "1398:8:11"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1398:21:11"
+              }
+            ],
+            "name": "mint",
+            "nameLocation": "1340:4:11",
+            "nodeType": "FunctionDefinition",
+            "overrides": {
+              "id": 1659,
+              "nodeType": "OverrideSpecifier",
+              "overrides": [],
+              "src": "1389:8:11"
+            },
+            "parameters": {
+              "id": 1658,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1655,
+                  "mutability": "mutable",
+                  "name": "to",
+                  "nameLocation": "1353:2:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1674,
+                  "src": "1345:10:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1654,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1345:7:11",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                },
+                {
+                  "constant": false,
+                  "id": 1657,
+                  "mutability": "mutable",
+                  "name": "tokenId",
+                  "nameLocation": "1365:7:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1674,
+                  "src": "1357:15:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  },
+                  "typeName": {
+                    "id": 1656,
+                    "name": "uint256",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1357:7:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1344:29:11"
+            },
+            "returnParameters": {
+              "id": 1665,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1664,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1674,
+                  "src": "1429:4:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 1663,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1429:4:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1428:6:11"
+            },
+            "scope": 1715,
+            "src": "1331:164:11",
+            "stateMutability": "nonpayable",
+            "virtual": true,
+            "visibility": "public"
+          },
+          {
+            "baseFunctions": [
+              1166
+            ],
+            "body": {
+              "id": 1687,
+              "nodeType": "Block",
+              "src": "1621:53:11",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "id": 1683,
+                        "name": "MINTER_ROLE",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 1623,
+                        "src": "1646:11:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      {
+                        "id": 1684,
+                        "name": "account",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 1677,
+                        "src": "1659:7:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      ],
+                      "id": 1682,
+                      "name": "hasRole",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3112,
+                      "src": "1638:7:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_view$_t_bytes32_$_t_address_$returns$_t_bool_$",
+                        "typeString": "function (bytes32,address) view returns (bool)"
+                      }
+                    },
+                    "id": 1685,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1638:29:11",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "functionReturnParameters": 1681,
+                  "id": 1686,
+                  "nodeType": "Return",
+                  "src": "1631:36:11"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 1675,
+              "nodeType": "StructuredDocumentation",
+              "src": "1501:53:11",
+              "text": " @dev See {IKIP17Mintable-isMinter}"
+            },
+            "functionSelector": "aa271e1a",
+            "id": 1688,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isMinter",
+            "nameLocation": "1568:8:11",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1678,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1677,
+                  "mutability": "mutable",
+                  "name": "account",
+                  "nameLocation": "1585:7:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1688,
+                  "src": "1577:15:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1676,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1577:7:11",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1576:17:11"
+            },
+            "returnParameters": {
+              "id": 1681,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1680,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nameLocation": "-1:-1:-1",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1688,
+                  "src": "1615:4:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 1679,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1615:4:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1614:6:11"
+            },
+            "scope": 1715,
+            "src": "1559:115:11",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "baseFunctions": [
+              1172
+            ],
+            "body": {
+              "id": 1702,
+              "nodeType": "Block",
+              "src": "1853:48:11",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "id": 1698,
+                        "name": "MINTER_ROLE",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 1623,
+                        "src": "1873:11:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      {
+                        "id": 1699,
+                        "name": "account",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 1691,
+                        "src": "1886:7:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      ],
+                      "id": 1697,
+                      "name": "grantRole",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3203,
+                      "src": "1863:9:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_bytes32_$_t_address_$returns$__$",
+                        "typeString": "function (bytes32,address)"
+                      }
+                    },
+                    "id": 1700,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "1863:31:11",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 1701,
+                  "nodeType": "ExpressionStatement",
+                  "src": "1863:31:11"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 1689,
+              "nodeType": "StructuredDocumentation",
+              "src": "1680:96:11",
+              "text": " @dev See {IKIP17Mintable-addMinter}\n Emits a {RoleGranted} event"
+            },
+            "functionSelector": "983b2d56",
+            "id": 1703,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [
+              {
+                "arguments": [
+                  {
+                    "id": 1694,
+                    "name": "DEFAULT_ADMIN_ROLE",
+                    "nodeType": "Identifier",
+                    "overloadedDeclarations": [],
+                    "referencedDeclaration": 3060,
+                    "src": "1833:18:11",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bytes32",
+                      "typeString": "bytes32"
+                    }
+                  }
+                ],
+                "id": 1695,
+                "kind": "modifierInvocation",
+                "modifierName": {
+                  "id": 1693,
+                  "name": "onlyRole",
+                  "nodeType": "IdentifierPath",
+                  "referencedDeclaration": 3071,
+                  "src": "1824:8:11"
+                },
+                "nodeType": "ModifierInvocation",
+                "src": "1824:28:11"
+              }
+            ],
+            "name": "addMinter",
+            "nameLocation": "1790:9:11",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1692,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 1691,
+                  "mutability": "mutable",
+                  "name": "account",
+                  "nameLocation": "1808:7:11",
+                  "nodeType": "VariableDeclaration",
+                  "scope": 1703,
+                  "src": "1800:15:11",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 1690,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "1800:7:11",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "visibility": "internal"
+                }
+              ],
+              "src": "1799:17:11"
+            },
+            "returnParameters": {
+              "id": 1696,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "1853:0:11"
+            },
+            "scope": 1715,
+            "src": "1781:120:11",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          },
+          {
+            "baseFunctions": [
+              1176
+            ],
+            "body": {
+              "id": 1713,
+              "nodeType": "Block",
+              "src": "2046:56:11",
+              "statements": [
+                {
+                  "expression": {
+                    "arguments": [
+                      {
+                        "id": 1708,
+                        "name": "MINTER_ROLE",
+                        "nodeType": "Identifier",
+                        "overloadedDeclarations": [],
+                        "referencedDeclaration": 1623,
+                        "src": "2069:11:11",
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        }
+                      },
+                      {
+                        "arguments": [],
+                        "expression": {
+                          "argumentTypes": [],
+                          "id": 1709,
+                          "name": "_msgSender",
+                          "nodeType": "Identifier",
+                          "overloadedDeclarations": [],
+                          "referencedDeclaration": 4097,
+                          "src": "2082:10:11",
+                          "typeDescriptions": {
+                            "typeIdentifier": "t_function_internal_view$__$returns$_t_address_$",
+                            "typeString": "function () view returns (address)"
+                          }
+                        },
+                        "id": 1710,
+                        "isConstant": false,
+                        "isLValue": false,
+                        "isPure": false,
+                        "kind": "functionCall",
+                        "lValueRequested": false,
+                        "names": [],
+                        "nodeType": "FunctionCall",
+                        "src": "2082:12:11",
+                        "tryCall": false,
+                        "typeDescriptions": {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      }
+                    ],
+                    "expression": {
+                      "argumentTypes": [
+                        {
+                          "typeIdentifier": "t_bytes32",
+                          "typeString": "bytes32"
+                        },
+                        {
+                          "typeIdentifier": "t_address",
+                          "typeString": "address"
+                        }
+                      ],
+                      "id": 1707,
+                      "name": "renounceRole",
+                      "nodeType": "Identifier",
+                      "overloadedDeclarations": [],
+                      "referencedDeclaration": 3246,
+                      "src": "2056:12:11",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_function_internal_nonpayable$_t_bytes32_$_t_address_$returns$__$",
+                        "typeString": "function (bytes32,address)"
+                      }
+                    },
+                    "id": 1711,
+                    "isConstant": false,
+                    "isLValue": false,
+                    "isPure": false,
+                    "kind": "functionCall",
+                    "lValueRequested": false,
+                    "names": [],
+                    "nodeType": "FunctionCall",
+                    "src": "2056:39:11",
+                    "tryCall": false,
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_tuple$__$",
+                      "typeString": "tuple()"
+                    }
+                  },
+                  "id": 1712,
+                  "nodeType": "ExpressionStatement",
+                  "src": "2056:39:11"
+                }
+              ]
+            },
+            "documentation": {
+              "id": 1704,
+              "nodeType": "StructuredDocumentation",
+              "src": "1907:101:11",
+              "text": " @dev See {IKIP17Mintable-renounceMinter}\n Emits a {RoleRevoked} event"
+            },
+            "functionSelector": "98650275",
+            "id": 1714,
+            "implemented": true,
+            "kind": "function",
+            "modifiers": [],
+            "name": "renounceMinter",
+            "nameLocation": "2022:14:11",
+            "nodeType": "FunctionDefinition",
+            "parameters": {
+              "id": 1705,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2036:2:11"
+            },
+            "returnParameters": {
+              "id": 1706,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "2046:0:11"
+            },
+            "scope": 1715,
+            "src": "2013:89:11",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "public"
+          }
+        ],
+        "scope": 1716,
+        "src": "388:1716:11",
+        "usedErrors": []
+      }
+    ],
+    "src": "114:1991:11"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.15+commit.e14f2714.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.8",
+  "updatedAt": "2022-08-11T14:10:46.060Z",
+  "devdoc": {
+    "details": "Extension of KIP17 that supports permissioned token minting See https://kips.klaytn.com/KIPs/kip-17#minting-extension",
+    "kind": "dev",
+    "methods": {
+      "addMinter(address)": {
+        "details": "See {IKIP17Mintable-addMinter} Emits a {RoleGranted} event"
+      },
+      "approve(address,uint256)": {
+        "details": "See {IKIP17-approve}."
+      },
+      "balanceOf(address)": {
+        "details": "See {IKIP17-balanceOf}."
+      },
+      "getApproved(uint256)": {
+        "details": "See {IKIP17-getApproved}."
+      },
+      "getRoleAdmin(bytes32)": {
+        "details": "Returns the admin role that controls `role`. See {grantRole} and {revokeRole}. To change a role's admin, use {_setRoleAdmin}."
+      },
+      "getRoleMember(bytes32,uint256)": {
+        "details": "Returns one of the accounts that have `role`. `index` must be a value between 0 and {getRoleMemberCount}, non-inclusive. Role bearers are not sorted in any particular way, and their ordering may change at any point. WARNING: When using {getRoleMember} and {getRoleMemberCount}, make sure you perform all queries on the same block. See the following https://forum.openzeppelin.com/t/iterating-over-elements-on-enumerableset-in-openzeppelin-contracts/2296[forum post] for more information."
+      },
+      "getRoleMemberCount(bytes32)": {
+        "details": "Returns the number of accounts that have `role`. Can be used together with {getRoleMember} to enumerate all bearers of a role."
+      },
+      "grantRole(bytes32,address)": {
+        "details": "Grants `role` to `account`. If `account` had not been already granted `role`, emits a {RoleGranted} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleGranted} event."
+      },
+      "hasRole(bytes32,address)": {
+        "details": "Returns `true` if `account` has been granted `role`."
+      },
+      "isApprovedForAll(address,address)": {
+        "details": "See {IKIP17-isApprovedForAll}."
+      },
+      "isMinter(address)": {
+        "details": "See {IKIP17Mintable-isMinter}"
+      },
+      "mint(address,uint256)": {
+        "details": "See {IKIP17Mintable-mint} IMPORTANT: this uses _safeMint internally, please be aware that if you do not want this safety functionality, replace with _mint Emits a {Transfer} event with 0X0 as the `from` account"
+      },
+      "name()": {
+        "details": "See {IKIP17Metadata-name}."
+      },
+      "ownerOf(uint256)": {
+        "details": "See {IKIP17-ownerOf}."
+      },
+      "renounceMinter()": {
+        "details": "See {IKIP17Mintable-renounceMinter} Emits a {RoleRevoked} event"
+      },
+      "renounceRole(bytes32,address)": {
+        "details": "Revokes `role` from the calling account. Roles are often managed via {grantRole} and {revokeRole}: this function's purpose is to provide a mechanism for accounts to lose their privileges if they are compromised (such as when a trusted device is misplaced). If the calling account had been revoked `role`, emits a {RoleRevoked} event. Requirements: - the caller must be `account`. May emit a {RoleRevoked} event."
+      },
+      "revokeRole(bytes32,address)": {
+        "details": "Revokes `role` from `account`. If `account` had been granted `role`, emits a {RoleRevoked} event. Requirements: - the caller must have ``role``'s admin role. May emit a {RoleRevoked} event."
+      },
+      "safeTransferFrom(address,address,uint256)": {
+        "details": "See {IKIP17-safeTransferFrom}."
+      },
+      "safeTransferFrom(address,address,uint256,bytes)": {
+        "details": "See {IKIP17-safeTransferFrom}."
+      },
+      "setApprovalForAll(address,bool)": {
+        "details": "See {IKIP17-setApprovalForAll}."
+      },
+      "supportsInterface(bytes4)": {
+        "details": "Returns true if `interfaceId` is implemented and false otherwise See {IKIP13} and {IERC165}."
+      },
+      "symbol()": {
+        "details": "See {IKIP17Metadata-symbol}."
+      },
+      "tokenURI(uint256)": {
+        "details": "See {IKIP17Metadata-tokenURI}."
+      },
+      "transferFrom(address,address,uint256)": {
+        "details": "See {IKIP17-transferFrom}."
+      }
+    },
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}
